@@ -9,6 +9,7 @@ import Apiary from "./apiary";
 import Bee from "./bee";
 import Colony from "./colony";
 import config from "./config";
+import NectarSearch from "./nectar-search";
 class GameState extends TGameState {
   public beePool!: TActorPool<Bee>;
   public colony = new Colony();
@@ -91,8 +92,9 @@ class GameState extends TGameState {
 const gameConfig = {
   states: {
     game: GameState,
+    nectarSearch: NectarSearch,
   },
-  defaultState: "game",
+  defaultState: "nectarSearch",
 };
 
 new TEngine(gameConfig, self);
