@@ -28,7 +28,7 @@ const MonthsContainer = styled.div<{ left: number }>`
   display: flex;
   position: absolute;
   left: ${(props) => props.left}px;
-  transition: left 1s linear;
+  transition: left ${config.timePerDay}s linear;
 `;
 
 const Month = styled.div`
