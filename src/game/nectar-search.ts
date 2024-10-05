@@ -8,6 +8,7 @@ import {
 import { vec3 } from "gl-matrix";
 import ScoutBee from "./scout-bee";
 import Garden from "./garden";
+import Deposit from "./deposit";
 
 export default class NectarSearch extends TGameState {
   public beforeWorldCreate() {
@@ -16,10 +17,19 @@ export default class NectarSearch extends TGameState {
     this.world!.config.collisionClasses.push({
       name: "Player",
     });
+
+    this.world!.config.collisionClasses.push({
+      name: "Deposit",
+    });
   }
 
   public async onCreate(engine: TEngine) {
-    const rp = new TResourcePack(engine, ScoutBee.resources, Garden.resources);
+    const rp = new TResourcePack(
+      engine,
+      ScoutBee.resources,
+      Garden.resources,
+      Deposit.resources
+    );
     await rp.load();
 
     this.onReady(engine);
@@ -43,7 +53,7 @@ export default class NectarSearch extends TGameState {
     camera.controller = cameraController;
     cameraController.attachTo(scout.rootComponent);
 
-    const garden = new Garden(engine);
+    const garden = new Garden(engine, this);
     this.addActor(garden);
   }
 

@@ -6,8 +6,10 @@ import {
   TTextureFilter,
   TActor,
   TEngine,
+  TGameState,
 } from "@tedengine/ted";
 import grassTexture from "../assets/grass.png";
+import Deposit from "./deposit";
 
 export default class Garden extends TActor {
   public static resources: TResourcePackConfig = {
@@ -21,7 +23,7 @@ export default class Garden extends TActor {
     ],
   };
 
-  public constructor(engine: TEngine) {
+  public constructor(engine: TEngine, state: TGameState) {
     super();
 
     const grass = new TSpriteComponent(
@@ -33,5 +35,8 @@ export default class Garden extends TActor {
       TSpriteLayer.Background_0
     );
     grass.applyTexture(engine, grassTexture);
+
+    const deposit = new Deposit(engine, 100, 100);
+    state.addActor(deposit);
   }
 }
