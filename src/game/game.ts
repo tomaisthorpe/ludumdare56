@@ -35,9 +35,10 @@ class GameState extends TGameState {
     this.addActor(apiary);
   }
 
-  public spawnBee() {
+  public spawnBee(isLeaving: boolean) {
     const bee = this.beePool.acquire();
     if (bee) {
+      bee.setup(isLeaving);
       this.addActor(bee);
     }
   }

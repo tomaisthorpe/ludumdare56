@@ -23,7 +23,7 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
     ],
   };
 
-  constructor(engine: TEngine, private spawnBee: () => void) {
+  constructor(engine: TEngine, private spawnBee: (isLeaving: boolean) => void) {
     super();
 
     const sprite = new TSpriteComponent(
@@ -41,7 +41,8 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
 
   public async onUpdate(): Promise<void> {
     if (Math.random() < 0.1) {
-      this.spawnBee();
+      // Randomly spawn a bee arriving or leaving
+      this.spawnBee(Math.random() < 0.5);
     }
   }
 }
