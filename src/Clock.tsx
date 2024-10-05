@@ -30,7 +30,6 @@ const Bar = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  transition: width ${config.timePerDay}s linear;
 `;
 
 const BarText = styled.div`
@@ -73,7 +72,14 @@ export default function Clock() {
     <Container>
       <BarContainer>
         <BarContent>
-          <Bar style={{ width: `${percentOfMonthPassed(date)}%` }} />
+          <Bar
+            style={{
+              width: `${percentOfMonthPassed(date)}%`,
+              transition: `width ${
+                date.getDate() === 1 ? 0 : config.timePerDay
+              }s linear`,
+            }}
+          />
           <BarText>{monthNames[date.getMonth()]}</BarText>
         </BarContent>
       </BarContainer>
