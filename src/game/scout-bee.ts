@@ -44,6 +44,7 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     this.rootComponent = new TSceneComponent(this, {
       mass: 1,
       fixedRotation: true,
+      linearDamping: 2,
     });
     this.rootComponent.collider = new TSphereCollider(16, "Player");
 
