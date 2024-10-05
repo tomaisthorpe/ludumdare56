@@ -9,6 +9,8 @@ import {
   TTextureFilter,
 } from "@tedengine/ted";
 import apiaryTexture from "../assets/apiary.png";
+import backgroundTexture from "../assets/background.png";
+
 import { vec3 } from "gl-matrix";
 import Colony from "./colony";
 import config from "./config";
@@ -17,6 +19,12 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
     textures: [
       {
         url: apiaryTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: backgroundTexture,
         config: {
           filter: TTextureFilter.Nearest,
         },
@@ -40,6 +48,16 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
       TSpriteLayer.Foreground_0
     );
     sprite.applyTexture(engine, apiaryTexture);
+
+    const background = new TSpriteComponent(
+      engine,
+      this,
+      800,
+      600,
+      TOriginPoint.Center,
+      TSpriteLayer.Background_0
+    );
+    background.applyTexture(engine, backgroundTexture);
 
     this.rootComponent.transform.translation = vec3.fromValues(0, 0, -50);
   }
