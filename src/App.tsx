@@ -5,7 +5,7 @@ import game from "./game/game?worker";
 import { ColonyStats } from "./ColonyStats";
 import Clock from "./Clock";
 import NectarDeposits from "./NectarDeposits";
-
+import GameOver from "./GameOver";
 function App() {
   return (
     <>
@@ -22,6 +22,7 @@ function App() {
           }}
           game={new game()}
         >
+          <GameOver />
           <ColonyStats />
           <Clock />
           <NectarDeposits />

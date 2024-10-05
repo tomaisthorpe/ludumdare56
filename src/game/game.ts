@@ -11,7 +11,7 @@ import Bee from "./bee";
 import Colony from "./colony";
 import config from "./config";
 import NectarSearch from "./nectar-search";
-
+import GameOver from "./game-over";
 class GameState extends TGameState implements TGameStateWithOnResume {
   public beePool!: TActorPool<Bee>;
   public colony = new Colony();
@@ -53,6 +53,11 @@ class GameState extends TGameState implements TGameStateWithOnResume {
       this.colony.step(this.currentDate);
     }
     this.timeSinceStartDay += delta;
+
+    if (this.colony.numBees <= 0 && this.colony.numBrood <= 0) {
+      this.engine.gameState.switch("gameOver");
+      return;
+    }
 
     // Share colony stats with UI
     const ctx = {
@@ -113,6 +118,7 @@ const gameConfig = {
   states: {
     game: GameState,
     nectarSearch: NectarSearch,
+    gameOver: GameOver,
   },
   defaultState: "game",
 };
