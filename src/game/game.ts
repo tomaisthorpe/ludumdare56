@@ -72,6 +72,7 @@ class GameState extends TGameState implements TGameStateWithOnResume {
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
       },
       nectarDeposits: this.colony.nectarDeposits,
+      events: config.events,
       date: this.currentDate,
     };
 

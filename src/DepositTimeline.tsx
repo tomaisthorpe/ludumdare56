@@ -1,6 +1,6 @@
 import { useGameContext } from "@tedengine/ted";
 import styled from "styled-components";
-import config from "./game/config";
+import config, { Event } from "./game/config";
 import { NectarDeposit } from "./game/colony";
 import { useState } from "react";
 
@@ -66,6 +66,17 @@ const DepositBar = styled.div<{ left: number; width: number; row: number }>`
   cursor: pointer;
 `;
 
+const EventBar = styled.div<{ left: number; width: number; row: number }>`
+  position: absolute;
+  height: 10px;
+  background-color: ${config.palette.onyx}; // Choose a color for events
+  top: ${(props) => 20 + props.row * 12}px;
+  left: ${(props) => props.left}px;
+  width: ${(props) => props.width}px;
+  border-radius: 3px;
+  cursor: pointer;
+`;
+
 const Tooltip = styled.div<{ x: number; y: number }>`
   position: fixed;
   background-color: ${config.palette.persianOrange};
@@ -80,14 +91,15 @@ const Tooltip = styled.div<{ x: number; y: number }>`
 `;
 
 export default function DepositTimeline() {
-  const { date, state, colony, nectarDeposits } = useGameContext();
+  const { date, state, colony, nectarDeposits, events } = useGameContext();
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
     name: string;
   } | null>(null);
 
-  if (state !== "game" || !date || !colony || !nectarDeposits) return null;
+  if (state !== "game" || !date || !colony || !nectarDeposits || !events)
+    return null;
 
   const currentMonth = date.getMonth();
   const currentDay = date.getDate();
@@ -97,14 +109,10 @@ export default function DepositTimeline() {
 
   const containerLeft = -(currentMonth * monthWidth + dayOffset);
 
-  const calculateDepositPosition = (deposit: NectarDeposit) => {
+  const calculateItemPosition = (item: NectarDeposit | Event) => {
     const currentYear = date.getFullYear();
-    const startDate = new Date(
-      currentYear,
-      deposit.startMonth,
-      deposit.startDay
-    );
-    const endDate = new Date(currentYear, deposit.endMonth, deposit.endDay);
+    const startDate = new Date(currentYear, item.startMonth, item.startDay);
+    const endDate = new Date(currentYear, item.endMonth, item.endDay);
 
     // Handle year wrap-around
     if (endDate < startDate) {
@@ -112,11 +120,11 @@ export default function DepositTimeline() {
     }
 
     const startPosition =
-      deposit.startMonth * monthWidth +
-      (deposit.startDay / getDaysInMonth(startDate)) * monthWidth;
+      item.startMonth * monthWidth +
+      (item.startDay / getDaysInMonth(startDate)) * monthWidth;
     const endPosition =
-      deposit.endMonth * monthWidth +
-      (deposit.endDay / getDaysInMonth(endDate)) * monthWidth;
+      item.endMonth * monthWidth +
+      (item.endDay / getDaysInMonth(endDate)) * monthWidth;
 
     return {
       left: startPosition,
@@ -124,20 +132,21 @@ export default function DepositTimeline() {
     };
   };
 
-  const assignRows = (deposits: NectarDeposit[]) => {
-    const sortedDeposits = [...deposits].sort((a, b) => {
+  const assignRows = (deposits: NectarDeposit[], events: Event[]) => {
+    const allItems = [...deposits, ...events].sort((a, b) => {
       const aDate = new Date(2024, a.startMonth, a.startDay);
       const bDate = new Date(2024, b.startMonth, b.startDay);
       return aDate.getTime() - bDate.getTime();
     });
-    const rows: { end: number; deposit: NectarDeposit }[][] = [];
+    const rows: { end: number; item: NectarDeposit | (typeof events)[0] }[][] =
+      [];
 
-    sortedDeposits.forEach((deposit) => {
-      const { left, width } = calculateDepositPosition(deposit);
+    allItems.forEach((item) => {
+      const { left, width } = calculateItemPosition(item);
       const end = left + width;
 
       let rowIndex = rows.findIndex((row) => {
-        return row.every((item) => item.end <= left);
+        return row.every((rowItem) => rowItem.end <= left);
       });
 
       if (rowIndex === -1) {
@@ -145,13 +154,13 @@ export default function DepositTimeline() {
         rows.push([]);
       }
 
-      rows[rowIndex].push({ end, deposit });
+      rows[rowIndex].push({ end, item });
     });
 
     return rows;
   };
 
-  const depositRows = assignRows(nectarDeposits);
+  const timelineRows = assignRows(nectarDeposits, events);
 
   return (
     <Container>
@@ -160,12 +169,15 @@ export default function DepositTimeline() {
           {monthNames.map((monthName, index) => (
             <Month key={index}>{monthName}</Month>
           ))}
-          {depositRows.map((row, rowIndex) =>
-            row.map(({ deposit }, index) => {
-              const { left, width } = calculateDepositPosition(deposit);
+          {timelineRows.map((row, rowIndex) =>
+            row.map(({ item }, index) => {
+              const { left, width } = calculateItemPosition(item);
+              const isEvent = "type" in item; // Assuming events have a 'type' property
+
+              const BarComponent = isEvent ? EventBar : DepositBar;
               return (
-                <DepositBar
-                  key={`${rowIndex}-${index}`}
+                <BarComponent
+                  key={`${isEvent ? "event" : "deposit"}-${rowIndex}-${index}`}
                   left={left}
                   width={width}
                   row={rowIndex}
@@ -174,7 +186,7 @@ export default function DepositTimeline() {
                     setTooltip({
                       x: e.clientX,
                       y: rect.top - 30,
-                      name: deposit.name,
+                      name: item.name,
                     });
                   }}
                   onMouseLeave={() => setTooltip(null)}

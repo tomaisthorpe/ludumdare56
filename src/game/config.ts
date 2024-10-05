@@ -1,5 +1,14 @@
 import { NectarDeposit } from "./colony";
 
+export type Event = {
+  type: "rain";
+  name: string;
+  startDay: number;
+  startMonth: number;
+  endDay: number;
+  endMonth: number;
+};
+
 const config = {
   palette: {
     onyx: "#393d3f",
@@ -23,6 +32,16 @@ const config = {
   apiary: {
     spawnRatePerBee: 0.001,
   },
+  events: [
+    {
+      type: "rain",
+      name: "Rain",
+      startDay: 1,
+      startMonth: 4,
+      endDay: 10,
+      endMonth: 4,
+    },
+  ] as Event[],
   garden: {
     deposits: [
       {
