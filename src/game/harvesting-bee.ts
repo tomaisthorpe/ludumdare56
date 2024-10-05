@@ -37,10 +37,13 @@ export default class HarvestingBee
 
   private speed = 1;
 
+  private sprite: TSpriteComponent;
+  private easeDistance = 50; // Distance to start easing
+
   constructor(engine: TEngine) {
     super();
 
-    const sprite = new TSpriteComponent(
+    this.sprite = new TSpriteComponent(
       engine,
       this,
       10,
@@ -48,7 +51,10 @@ export default class HarvestingBee
       TOriginPoint.Center,
       TSpriteLayer.Foreground_1
     );
-    sprite.applyTexture(engine, scoutTexture);
+    this.sprite.applyTexture(engine, scoutTexture);
+
+    // Default scale to 0 to prevent first frame being 100%
+    this.sprite.transform.scale = vec3.fromValues(0, 0, 1);
   }
 
   public setup(target: vec2, apiaryLocation: vec2): void {
@@ -63,7 +69,7 @@ export default class HarvestingBee
     this.apiaryLocation = vec2.add(
       vec2.create(),
       apiaryLocation,
-      vec2.fromValues(Math.random() * 30 - 15, Math.random() * 10 - 5)
+      vec2.fromValues(Math.random() * 30 - 15, Math.random() * 8 - 4)
     );
 
     this.rootComponent.transform.translation = vec3.fromValues(
@@ -78,7 +84,7 @@ export default class HarvestingBee
     this.target = null;
   }
 
-  public async onUpdate(_: TEngine, delta: number): Promise<void> {
+  public async onUpdate(engine: TEngine, delta: number): Promise<void> {
     if (!this.target) return;
 
     const direction = vec2.sub(
@@ -90,6 +96,7 @@ export default class HarvestingBee
       )
     );
     const length = vec2.length(direction);
+
     if (length < 5) {
       if (this.leaving) {
         this.target = this.apiaryLocation;
@@ -98,6 +105,19 @@ export default class HarvestingBee
         this.pool.release(this);
       }
     }
+
+    // Calculate scale based on distance to apiary
+    const distanceToApiary = vec2.distance(
+      vec2.fromValues(
+        this.rootComponent.transform.translation[0],
+        this.rootComponent.transform.translation[1]
+      ),
+      this.apiaryLocation!
+    );
+
+    const scale = Math.min(1, distanceToApiary / this.easeDistance);
+    this.sprite.transform.scale = vec3.fromValues(scale, scale, 1);
+
     const clampedSpeed = Math.min(this.speed, length);
     vec3.scaleAndAdd(
       this.rootComponent.transform.translation,
