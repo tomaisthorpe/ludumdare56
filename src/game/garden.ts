@@ -25,6 +25,8 @@ export default class Garden extends TActor {
     ],
   };
 
+  public deposits: Deposit[] = [];
+
   public constructor(private engine: TEngine, private state: TGameState) {
     super();
 
@@ -42,7 +44,17 @@ export default class Garden extends TActor {
 
   public updateDeposits(deposits: NectarDeposit[]) {
     deposits.forEach((deposit) => {
+      // Check if deposit already exists
+      const existingDeposit = this.deposits.find(
+        (d) => d.info.id === deposit.id
+      );
+      if (existingDeposit) {
+        existingDeposit.updateInfo(deposit);
+        return;
+      }
+
       const d = new Deposit(this.engine, deposit.x, deposit.y, deposit);
+      this.deposits.push(d);
       this.state.addActor(d);
     });
   }

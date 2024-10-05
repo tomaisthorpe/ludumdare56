@@ -32,8 +32,10 @@ export default class Deposit extends TActor {
     ],
   };
 
+  public marker?: TSpriteComponent;
+
   public constructor(
-    engine: TEngine,
+    private engine: TEngine,
     x: number,
     y: number,
     public info: NectarDeposit
@@ -57,19 +59,30 @@ export default class Deposit extends TActor {
     );
     sprite.applyTexture(engine, depositTexture);
 
-    // If status is new, add the marker to show player
+    this.updateInfo(info);
+
+    this.rootComponent.transform.translation = vec3.fromValues(x, y, 0);
+  }
+
+  public updateInfo(info: NectarDeposit) {
+    console.log("updateInfo", info);
+    this.info = info;
+
+    if (this.marker) {
+      this.marker.shouldRender = false;
+      this.marker.destroy();
+    }
+
     if (info.status === "available" && !info.harvesting) {
-      const marker = new TSpriteComponent(
-        engine,
+      this.marker = new TSpriteComponent(
+        this.engine,
         this,
         16,
         33,
         TOriginPoint.Center,
         TSpriteLayer.Midground_1
       );
-      marker.applyTexture(engine, hereBeNectarTexture);
+      this.marker.applyTexture(this.engine, hereBeNectarTexture);
     }
-
-    this.rootComponent.transform.translation = vec3.fromValues(x, y, 0);
   }
 }
