@@ -35,12 +35,17 @@ export default class HarvestingBee
   private apiaryLocation: vec2 | null = null;
   private leaving = false;
 
-  private maxSpeed = 200; // Maximum speeda
+  private maxSpeed = 200; // Maximum speed
   private minSpeed = 0.5; // Minimum speed when approaching target
   private slowdownDistance = 100; // Distance to start slowing down when leaving
 
   private sprite: TSpriteComponent;
   private easeDistance = 50; // Distance to start easing
+
+  // New properties for path variation
+  private waveAmplitude = 50; // Maximum deviation from straight path
+  private waveFrequency = 0.01; // How fast the wave oscillates
+  private waveOffset: number; // Random offset for each bee
 
   constructor(engine: TEngine) {
     super();
@@ -57,6 +62,9 @@ export default class HarvestingBee
 
     // Default scale to 0 to prevent first frame being 100%
     this.sprite.transform.scale = vec3.fromValues(0, 0, 1);
+
+    // Initialize wave offset
+    this.waveOffset = Math.random() * Math.PI * 2;
   }
 
   public setup(target: vec2, apiaryLocation: vec2): void {
@@ -89,7 +97,7 @@ export default class HarvestingBee
     this.target = null;
   }
 
-  public async onUpdate(_: TEngine, delta: number): Promise<void> {
+  public async onUpdate(engine: TEngine, delta: number): Promise<void> {
     if (!this.target) return;
 
     const direction = vec2.sub(
@@ -123,7 +131,7 @@ export default class HarvestingBee
     const scale = Math.min(1, distanceToApiary / this.easeDistance);
     this.sprite.transform.scale = vec3.fromValues(scale, scale, 1);
 
-    // Calculate speed based on whether leaving or returning
+    // Calculate speed
     let currentSpeed;
     if (this.leaving) {
       // Slow down when approaching target
@@ -142,22 +150,51 @@ export default class HarvestingBee
       currentSpeed = this.maxSpeed;
     }
 
-    // Move at calculated speed
+    // Calculate wave offset
+    const waveOffset =
+      Math.sin(
+        this.waveOffset +
+          this.rootComponent.transform.translation[0] * this.waveFrequency
+      ) * this.waveAmplitude;
+
+    // Calculate movement vector
     const normalizedDirection = vec2.normalize(vec2.create(), direction);
+    const perpendicularDirection = vec2.fromValues(
+      -normalizedDirection[1],
+      normalizedDirection[0]
+    );
+
+    // Combine linear movement with wave motion
+    const movement = vec3.create();
     vec3.scaleAndAdd(
-      this.rootComponent.transform.translation,
-      this.rootComponent.transform.translation,
+      movement,
+      movement,
       vec3.fromValues(normalizedDirection[0], normalizedDirection[1], 0),
       currentSpeed * delta
     );
-
-    // Rotate towards target
-    const angle = Math.atan2(direction[1], direction[0]);
-    this.rootComponent.transform.rotation = quat.fromEuler(
-      quat.create(),
-      0,
-      0,
-      (angle * 180) / Math.PI - 90
+    vec3.scaleAndAdd(
+      movement,
+      movement,
+      vec3.fromValues(perpendicularDirection[0], perpendicularDirection[1], 0),
+      waveOffset * delta
     );
+
+    // Apply movement
+    vec3.add(
+      this.rootComponent.transform.translation,
+      this.rootComponent.transform.translation,
+      movement
+    );
+
+    // Update rotation to face movement direction, but only if the bee is moving
+    if (vec2.length(vec2.fromValues(movement[0], movement[1])) > 1) {
+      const movementAngle = Math.atan2(movement[1], movement[0]);
+      this.rootComponent.transform.rotation = quat.fromEuler(
+        quat.create(),
+        0,
+        0,
+        (movementAngle * 180) / Math.PI - 90
+      );
+    }
   }
 }

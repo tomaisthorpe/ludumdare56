@@ -78,7 +78,7 @@ export default class NectarSearch
 
   public harvestDeposit(deposit: Deposit) {
     // Figure out type of deposit, and if it's a new one.
-    if (deposit.info.status != "available" || deposit.info.harvesting) {
+    if (deposit.info.status != "available" || !deposit.info.harvesting) {
       return;
     }
 
@@ -90,7 +90,7 @@ export default class NectarSearch
     if (bee) {
       // Choose random harvesting deposit
       const deposit = this.garden.deposits.filter(
-        (d) => d.info.status == "available" && d.info.harvesting
+        (d) => d.info.status == "available" && !d.info.harvesting
       )[Math.floor(Math.random() * this.garden.deposits.length)];
 
       if (!deposit) {
