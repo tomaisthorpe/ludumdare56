@@ -87,9 +87,20 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
 
     this.sprite.transform.rotation = q;
 
+    console.log(this.sprite.transform.translation[1]);
     this.shadow.transform.translation[0] = this.sprite.transform.translation[0];
     this.shadow.transform.translation[1] =
-      this.sprite.transform.translation[1] - 8;
+      this.sprite.transform.translation[1] -
+      8 *
+        (1 +
+          Math.abs(
+            Math.cos(
+              (this.rootComponent.transform.translation[1] +
+                this.rootComponent.transform.translation[0]) *
+                0.01
+            )
+          ) *
+            0.1);
     this.shadow.transform.translation[2] = this.sprite.transform.translation[2];
     this.shadow.transform.rotation = this.sprite.transform.rotation;
   }
