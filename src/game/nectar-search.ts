@@ -99,7 +99,7 @@ export default class NectarSearch
 
       bee.setup(
         vec2.fromValues(deposit.info.x, deposit.info.y),
-        vec2.fromValues(0, 0)
+        vec2.fromValues(0, 52)
       );
       this.addActor(bee);
     }

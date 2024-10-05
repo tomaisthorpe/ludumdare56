@@ -43,8 +43,8 @@ export default class HarvestingBee
     const sprite = new TSpriteComponent(
       engine,
       this,
+      10,
       16,
-      20,
       TOriginPoint.Center,
       TSpriteLayer.Foreground_1
     );
@@ -52,8 +52,25 @@ export default class HarvestingBee
   }
 
   public setup(target: vec2, apiaryLocation: vec2): void {
-    this.target = target;
-    this.apiaryLocation = apiaryLocation;
+    // Add small random offset to target
+    this.target = vec2.add(
+      vec2.create(),
+      target,
+      vec2.fromValues(Math.random() * 100 - 50, Math.random() * 100 - 50)
+    );
+
+    // Add small random offset to apiaryLocation
+    this.apiaryLocation = vec2.add(
+      vec2.create(),
+      apiaryLocation,
+      vec2.fromValues(Math.random() * 30 - 15, Math.random() * 10 - 5)
+    );
+
+    this.rootComponent.transform.translation = vec3.fromValues(
+      this.apiaryLocation[0],
+      this.apiaryLocation[1],
+      0
+    );
     this.leaving = true;
   }
 
