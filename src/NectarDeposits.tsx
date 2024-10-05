@@ -45,8 +45,15 @@ const GoSearchButton = styled.button`
   margin-top: 10px;
 `;
 
+const Notice = styled.div`
+  font-size: 14px;
+  color: ${config.palette.blue};
+  margin-top: 10px;
+  font-size: 1em;
+`;
+
 export default function NectarDeposits() {
-  const { nectarDeposits, state } = useGameContext();
+  const { nectarDeposits, state, isRaining } = useGameContext();
   const events = useEventQueue();
   if (!nectarDeposits) return null;
   if (state !== "game") return null;
@@ -86,7 +93,13 @@ export default function NectarDeposits() {
           ))}
       </Deposits>
       {depositsAvailable.length > 0 && (
-        <GoSearchButton onClick={onClick}>Search for Nectar</GoSearchButton>
+        <>
+          {isRaining ? (
+            <Notice>It's raining, you can't go out</Notice>
+          ) : (
+            <GoSearchButton onClick={onClick}>Search for Nectar</GoSearchButton>
+          )}
+        </>
       )}
     </Container>
   );

@@ -36,10 +36,10 @@ const config = {
     {
       type: "rain",
       name: "Rain",
-      startDay: 10,
+      startDay: 5,
       startMonth: 3,
       endDay: 25,
-      endMonth: 3,
+      endMonth: 4,
     },
   ] as Event[],
   garden: {

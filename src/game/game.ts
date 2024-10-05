@@ -75,6 +75,7 @@ export default class GameState
         honeyProduction: this.colony.calculateHoneyProduction(this.currentDate),
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
       },
+      isRaining: this.colony.isRaining(this.currentDate),
       nectarDeposits: this.colony.nectarDeposits,
       events: config.events,
       date: this.currentDate,
