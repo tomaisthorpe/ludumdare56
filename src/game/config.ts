@@ -39,7 +39,7 @@ const config = {
       startDay: 1,
       startMonth: 4,
       endDay: 10,
-      endMonth: 4,
+      endMonth: 6,
     },
   ] as Event[],
   garden: {

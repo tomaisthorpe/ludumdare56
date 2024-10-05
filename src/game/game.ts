@@ -12,7 +12,11 @@ import Colony from "./colony";
 import config from "./config";
 import NectarSearch from "./nectar-search";
 import GameOver from "./game-over";
-class GameState extends TGameState implements TGameStateWithOnResume {
+
+export default class GameState
+  extends TGameState
+  implements TGameStateWithOnResume
+{
   public beePool!: TActorPool<Bee>;
   public colony = new Colony();
 
@@ -68,7 +72,7 @@ class GameState extends TGameState implements TGameStateWithOnResume {
         layingRate: this.colony.layingRate,
         honeyReserves: this.colony.honeyReserves,
         honeyConsumption: this.colony.calculateHoneyConsumption(),
-        honeyProduction: this.colony.calculateHoneyProduction(),
+        honeyProduction: this.colony.calculateHoneyProduction(this.currentDate),
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
       },
       nectarDeposits: this.colony.nectarDeposits,
@@ -84,7 +88,7 @@ class GameState extends TGameState implements TGameStateWithOnResume {
     this.activeCamera = camera;
     this.addActor(camera);
 
-    const apiary = new Apiary(engine, this.colony, this.spawnBee);
+    const apiary = new Apiary(engine, this.colony, this.spawnBee, this);
     this.addActor(apiary);
 
     this.events.addListener<{

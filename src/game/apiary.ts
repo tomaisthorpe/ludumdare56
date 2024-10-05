@@ -10,6 +10,7 @@ import {
 } from "@tedengine/ted";
 import apiaryTexture from "../assets/apiary.png";
 import backgroundTexture from "../assets/background.png";
+import GameState from "./game";
 
 import { vec3 } from "gl-matrix";
 import Colony from "./colony";
@@ -35,7 +36,8 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
   constructor(
     engine: TEngine,
     private colony: Colony,
-    private spawnBee: (isLeaving: boolean) => void
+    private spawnBee: (isLeaving: boolean) => void,
+    private state: GameState
   ) {
     super();
 
@@ -65,7 +67,7 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
   public async onUpdate(): Promise<void> {
     // Spawn bee rate depends on how many bees we have
     const spawnRate =
-      this.colony.calculateHoneyProduction() > 0
+      this.colony.calculateHoneyProduction(this.state.currentDate) > 0
         ? config.apiary.spawnRatePerBee * this.colony.numBees
         : 0;
     if (Math.random() < spawnRate) {

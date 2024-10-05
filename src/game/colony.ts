@@ -57,6 +57,22 @@ export default class Colony {
     return this.brood.reduce((sum, group) => sum + group.count, 0);
   }
 
+  public isRaining(date: Date): boolean {
+    return config.events.some((event) => {
+      const startDate = new Date(
+        date.getFullYear(),
+        event.startMonth,
+        event.startDay
+      );
+      const endDate = new Date(
+        date.getFullYear(),
+        event.endMonth,
+        event.endDay
+      );
+      return date >= startDate && date <= endDate;
+    });
+  }
+
   public get honeyReserves(): number {
     return this._honeyReserves;
   }
@@ -115,7 +131,7 @@ export default class Colony {
     });
 
     // Harvest nectar from deposits
-    this._honeyReserves += this.calculateHoneyProduction();
+    this._honeyReserves += this.calculateHoneyProduction(currentDate);
 
     // Calculate honey consumption
     const honeyConsumption = this.calculateHoneyConsumption();
@@ -134,7 +150,11 @@ export default class Colony {
     this._honeyReserves = Math.max(0, this._honeyReserves - honeyConsumption);
   }
 
-  public calculateHoneyProduction(): number {
+  public calculateHoneyProduction(date: Date): number {
+    if (this.isRaining(date)) {
+      return 0;
+    }
+
     // Maximum amount of nectar that can be harvested from the deposits
     const maxNectarHarvest = this.nectarDeposits.reduce(
       (sum, deposit) =>
