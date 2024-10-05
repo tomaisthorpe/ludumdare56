@@ -44,6 +44,7 @@ class GameState extends TGameState {
     const ctx = {
       colony: {
         numBees: this.colony.numBees,
+        numBrood: this.colony.numBrood,
         layingRate: this.colony.layingRate,
         honeyReserves: this.colony.honeyReserves,
         honeyConsumption: this.colony.calculateHoneyConsumption(),

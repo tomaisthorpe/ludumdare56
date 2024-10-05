@@ -22,6 +22,10 @@ export default class Colony {
     return this.workerBees.reduce((sum, group) => sum + group.count, 0);
   }
 
+  public get numBrood(): number {
+    return this.brood.reduce((sum, group) => sum + group.count, 0);
+  }
+
   public get honeyReserves(): number {
     return this._honeyReserves;
   }
@@ -58,7 +62,7 @@ export default class Colony {
     if (this._honeyReserves < honeyConsumption) {
       this.starvationDays++;
       if (this.starvationDays > config.colony.starvationTolerance) {
-        this.killBeesFromStarvation(honeyConsumption);
+        this.killBeesFromStarvation();
       }
     } else {
       this.starvationDays = 0;

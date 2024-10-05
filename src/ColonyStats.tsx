@@ -46,7 +46,7 @@ export function ColonyStats() {
       <GroupLabel>Colony</GroupLabel>
       <Group>
         <Stat>Bees: {colony.numBees}</Stat>
-        <Stat>Brood: 0</Stat>
+        <Stat>Brood: {colony.numBrood}</Stat>
         <Stat>
           Laying: <LayingRate rate={colony.layingRate} />
         </Stat>
@@ -54,7 +54,7 @@ export function ColonyStats() {
 
       <GroupLabel>Honey</GroupLabel>
       <Group>
-        <div>Honey: {colony.honeyReserves}</div>
+        <div>Honey: {colony.honeyReserves.toFixed(0)}</div>
         <div>Honey Consumption: {colony.honeyConsumption.toFixed(1)}</div>
         <div>
           How Long Will Honey Last: {colony.howLongWillHoneyLast.toFixed(0)}
