@@ -43,6 +43,7 @@ class GameState extends TGameState {
     const ctx = {
       colony: {
         numBees: this.colony.numBees,
+        layingRate: this.colony.layingRate,
         honeyReserves: this.colony.honeyReserves,
         honeyConsumption: this.colony.calculateHoneyConsumption(),
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
@@ -60,6 +61,18 @@ class GameState extends TGameState {
 
     const apiary = new Apiary(engine, this.colony, this.spawnBee);
     this.addActor(apiary);
+
+    this.events.addListener<{
+      type: "CHANGE_LAYING_RATE";
+      payload: { rate: number };
+    }>("CHANGE_LAYING_RATE", (event) => {
+      if (event.payload.rate < 0) {
+        event.payload.rate = 0;
+      } else if (event.payload.rate > 5) {
+        event.payload.rate = 5;
+      }
+      this.colony.layingRate = event.payload.rate;
+    });
   }
 
   public spawnBee(isLeaving: boolean) {

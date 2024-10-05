@@ -12,6 +12,7 @@ const config = {
   colony: {
     initialWorkerBees: 140,
     initialHoneyReserves: 100,
+    initialLayingRate: 2,
     honeyConsumptionPerBee: 0.01,
   },
   apiary: {

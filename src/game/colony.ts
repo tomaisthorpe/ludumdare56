@@ -7,6 +7,8 @@ export default class Colony {
   // @todo what unit is this?
   private _honeyReserves = config.colony.initialHoneyReserves;
 
+  public layingRate = config.colony.initialLayingRate;
+
   public get numBees(): number {
     return this.numWorkerBees;
   }

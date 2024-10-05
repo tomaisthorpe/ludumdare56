@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useGameContext } from "@tedengine/ted";
 import config from "./game/config";
+import LayingRate from "./LayingRate";
 
 const Container = styled.div`
   position: absolute;
@@ -31,6 +32,9 @@ const GroupLabel = styled.div`
 
 const Stat = styled.div`
   width: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 export function ColonyStats() {
@@ -43,7 +47,9 @@ export function ColonyStats() {
       <Group>
         <Stat>Bees: {colony.numBees}</Stat>
         <Stat>Brood: 0</Stat>
-        <Stat>Laying Rate: 2</Stat>
+        <Stat>
+          Laying: <LayingRate rate={colony.layingRate} />
+        </Stat>
       </Group>
 
       <GroupLabel>Honey</GroupLabel>
