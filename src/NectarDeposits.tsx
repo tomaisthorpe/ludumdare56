@@ -56,6 +56,11 @@ export default function NectarDeposits() {
     });
   };
 
+  const depositsAvailable = nectarDeposits.filter(
+    (deposit: NectarDeposit) =>
+      deposit.status === "available" && !deposit.harvesting
+  );
+
   return (
     <Container>
       <Deposits>
@@ -80,7 +85,9 @@ export default function NectarDeposits() {
             </Deposit>
           ))}
       </Deposits>
-      <GoSearchButton onClick={onClick}>Search for Nectar</GoSearchButton>
+      {depositsAvailable.length > 0 && (
+        <GoSearchButton onClick={onClick}>Search for Nectar</GoSearchButton>
+      )}
     </Container>
   );
 }
