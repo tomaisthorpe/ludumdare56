@@ -1,4 +1,5 @@
 import {
+  TActorPool,
   TEngine,
   TFixedAxisCameraController,
   TGameState,
@@ -6,17 +7,19 @@ import {
   TOrthographicCamera,
   TResourcePack,
 } from "@tedengine/ted";
-import { vec3 } from "gl-matrix";
+import { vec3, vec2 } from "gl-matrix";
 import ScoutBee from "./scout-bee";
 import Garden from "./garden";
 import Deposit from "./deposit";
 import { NectarDeposit } from "./colony";
+import HarvestingBee from "./harvesting-bee";
 
 export default class NectarSearch
   extends TGameState
   implements TGameStateWithOnEnter
 {
   private garden!: Garden;
+  private harvestingBeePool!: TActorPool<HarvestingBee>;
 
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
@@ -38,6 +41,11 @@ export default class NectarSearch
       Deposit.resources
     );
     await rp.load();
+
+    this.harvestingBeePool = new TActorPool<HarvestingBee>(
+      () => new HarvestingBee(engine),
+      100
+    );
 
     this.onReady(engine);
   }
@@ -77,9 +85,34 @@ export default class NectarSearch
     this.engine.gameState.pop(deposit.info.id);
   }
 
+  private spawnHarvestingBee() {
+    const bee = this.harvestingBeePool.acquire();
+    if (bee) {
+      // Choose random harvesting deposit
+      const deposit = this.garden.deposits.filter(
+        (d) => d.info.status == "available" && !d.info.harvesting
+      )[Math.floor(Math.random() * this.garden.deposits.length)];
+
+      if (!deposit) {
+        return;
+      }
+
+      bee.setup(
+        vec2.fromValues(deposit.info.x, deposit.info.y),
+        vec2.fromValues(0, 0)
+      );
+      this.addActor(bee);
+    }
+  }
+
   public onUpdate() {
     this.engine.updateGameContext({
       state: "nectarSearch",
     });
+
+    // Randomly spawn bees
+    if (Math.random() < 0.1) {
+      this.spawnHarvestingBee();
+    }
   }
 }
