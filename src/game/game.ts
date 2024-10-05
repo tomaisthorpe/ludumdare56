@@ -8,10 +8,15 @@ import {
 import Apiary from "./apiary";
 import Bee from "./bee";
 import Colony from "./colony";
-
+import config from "./config";
 class GameState extends TGameState {
   public beePool!: TActorPool<Bee>;
   public colony = new Colony();
+
+  public currentDate: Date = new Date(
+    new Date().setMonth(config.startingMonth, config.startingDay)
+  );
+  private timeSinceStartDay = 0;
 
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
@@ -27,7 +32,13 @@ class GameState extends TGameState {
     this.world!.config.mode = "2d";
   }
 
-  public onUpdate() {
+  public onUpdate(_: TEngine, delta: number) {
+    this.timeSinceStartDay += delta;
+    if (this.timeSinceStartDay > config.timePerDay) {
+      this.timeSinceStartDay = 0;
+      this.currentDate.setDate(this.currentDate.getDate() + 1);
+    }
+
     // Share colony stats with UI
     const ctx = {
       colony: {
@@ -36,6 +47,7 @@ class GameState extends TGameState {
         honeyConsumption: this.colony.calculateHoneyConsumption(),
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
       },
+      date: this.currentDate,
     };
 
     this.engine.updateGameContext(ctx);
