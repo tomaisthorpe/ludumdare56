@@ -72,9 +72,11 @@ export default class Colony {
   }
 
   public step(currentDate: Date): void {
-    // Lay new eggs
-    const newEggs = Math.floor(this.layingRate * config.colony.eggMultiplier);
-    this.brood.unshift({ count: newEggs, age: 0 });
+    // Lay new eggs, if there are bees
+    if (this.numBees > 0) {
+      const newEggs = Math.floor(this.layingRate * config.colony.eggMultiplier);
+      this.brood.unshift({ count: newEggs, age: 0 });
+    }
 
     // Age brood and hatch into worker bees
     this.brood = this.brood.map((group) => ({ ...group, age: group.age + 1 }));
