@@ -14,7 +14,8 @@
     "gl-matrix": "^3.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "simplex-noise": "^4.0.1"
+    "simplex-noise": "^4.0.1",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@types/react": "^18.2.58",

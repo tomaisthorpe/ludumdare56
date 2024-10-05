@@ -7,9 +7,11 @@ import {
 } from "@tedengine/ted";
 import Apiary from "./apiary";
 import Bee from "./bee";
+import Colony from "./colony";
 
 class GameState extends TGameState {
   public beePool!: TActorPool<Bee>;
+  public colony = new Colony();
 
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
@@ -25,13 +27,26 @@ class GameState extends TGameState {
     this.world!.config.mode = "2d";
   }
 
-  public onUpdate() {}
+  public onUpdate() {
+    // Share colony stats with UI
+    const ctx = {
+      colony: {
+        numBees: this.colony.numBees,
+        honeyReserves: this.colony.honeyReserves,
+        honeyConsumption: this.colony.calculateHoneyConsumption(),
+        howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
+      },
+    };
+
+    this.engine.updateGameContext(ctx);
+  }
+
   public onReady(engine: TEngine) {
     const camera = new TOrthographicCamera(engine);
     this.activeCamera = camera;
     this.addActor(camera);
 
-    const apiary = new Apiary(engine, this.spawnBee);
+    const apiary = new Apiary(engine, this.colony, this.spawnBee);
     this.addActor(apiary);
   }
 

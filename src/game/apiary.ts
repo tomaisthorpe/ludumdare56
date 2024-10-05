@@ -10,7 +10,8 @@ import {
 } from "@tedengine/ted";
 import apiaryTexture from "../assets/apiary.png";
 import { vec3 } from "gl-matrix";
-
+import Colony from "./colony";
+import config from "./config";
 export default class Apiary extends TActor implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {
     textures: [
@@ -23,7 +24,11 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
     ],
   };
 
-  constructor(engine: TEngine, private spawnBee: (isLeaving: boolean) => void) {
+  constructor(
+    engine: TEngine,
+    private colony: Colony,
+    private spawnBee: (isLeaving: boolean) => void
+  ) {
     super();
 
     const sprite = new TSpriteComponent(
@@ -40,7 +45,9 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
   }
 
   public async onUpdate(): Promise<void> {
-    if (Math.random() < 0.1) {
+    // Spawn bee rate depends on how many bees we have
+    const spawnRate = config.apiary.spawnRatePerBee * this.colony.numBees;
+    if (Math.random() < spawnRate) {
       // Randomly spawn a bee arriving or leaving
       this.spawnBee(Math.random() < 0.5);
     }

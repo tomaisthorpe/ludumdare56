@@ -72,7 +72,6 @@ export default class Bee extends TActor implements TPoolableActor {
     this.randomize();
     this.isLeaving = isLeaving;
     this.rootComponent.transform.translation = vec3.fromValues(100, -230, -50);
-    console.log(this.isLeaving);
 
     if (!isLeaving) {
       this.life = 2.5;
@@ -104,7 +103,6 @@ export default class Bee extends TActor implements TPoolableActor {
 
     this.rootComponent.transform.translation = vec3.fromValues(x, y, -50);
     if (this.isLeaving && x < -450) {
-      console.log(this.life);
       this.pool.release(this);
     }
   }
