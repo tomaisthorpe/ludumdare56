@@ -5,12 +5,18 @@ interface BeeGroup {
   age: number;
 }
 
-interface NectarDeposit {
+export interface NectarDeposit {
+  id: number;
+
   // This is the maximum amount of nectar that can be collected from the deposit
   potential: number;
 
   // Time until the deposit no longer has nectar
   timeLeft: number;
+  seasonLength: number;
+
+  // How much nectar was harvested last time
+  lastHarvest: number;
 }
 
 export default class Colony {
@@ -21,10 +27,13 @@ export default class Colony {
 
   public layingRate = config.colony.initialLayingRate;
 
-  private nectarDeposits: NectarDeposit[] = [
+  public nectarDeposits: NectarDeposit[] = [
     {
+      id: 0,
       potential: 100,
       timeLeft: 10,
+      seasonLength: 10,
+      lastHarvest: 0,
     },
   ];
 
@@ -116,6 +125,15 @@ export default class Colony {
       ),
       maxNectarHarvest
     );
+
+    // Proportion of the potential that was harvested
+    const harvestProportion = nectarHarvested / maxNectarHarvest;
+
+    // Add the last harvest amount to each nectar deposit
+    // This will be displayed in the UI
+    this.nectarDeposits.forEach((deposit) => {
+      deposit.lastHarvest = deposit.potential * harvestProportion;
+    });
 
     return nectarHarvested;
   }

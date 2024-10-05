@@ -51,6 +51,7 @@ class GameState extends TGameState {
         honeyProduction: this.colony.calculateHoneyProduction(),
         howLongWillHoneyLast: this.colony.howLongWillHoneyLast(),
       },
+      nectarDeposits: this.colony.nectarDeposits,
       date: this.currentDate,
     };
 

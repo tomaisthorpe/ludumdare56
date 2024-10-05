@@ -4,6 +4,7 @@ import { TGame } from "@tedengine/ted";
 import game from "./game/game?worker";
 import { ColonyStats } from "./ColonyStats";
 import Clock from "./Clock";
+import NectarDeposits from "./NectarDeposits";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         >
           <ColonyStats />
           <Clock />
+          <NectarDeposits />
         </TGame>
       </div>
     </>
