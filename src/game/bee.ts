@@ -48,12 +48,26 @@ export default class Bee extends TActor implements TPoolableActor {
 
     this.rootComponent.transform.translation = vec3.fromValues(100, -230, -50);
 
-    this.coef = Math.random() * 1 + 0.5;
+    this.randomize();
+  }
+
+  private randomize(): void {
+    // Generate a coef between 0.5 and 1.5
+    this.coef = Math.random() * 0.5 + 0.5;
+
+    // Randomize scale between 0.7 and 1.0
+    this.rootComponent.transform.scale = vec3.fromValues(
+      Math.random() * 0.3 + 0.7,
+      Math.random() * 0.3 + 0.7,
+      1
+    );
+
+    // Randomize xspeed between 300 and 500
+    this.xSpeed = Math.random() * 200 + 300;
   }
 
   public reset(): void {
-    // Generate a coef between 0.5 and 1.5
-    this.coef = Math.random() * 1 + 0.5;
+    this.randomize();
 
     this.life = 0;
 
