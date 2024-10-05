@@ -38,8 +38,6 @@ class GameState extends TGameState implements TGameStateWithOnResume {
   public async onResume(_: TEngine, depositId?: number) {
     if (depositId !== undefined) {
       // Set the deposit to harvesting
-      console.log("depositId", depositId);
-      console.log(this.colony.nectarDeposits);
       this.colony.nectarDeposits.find((d) => d.id === depositId)!.harvesting =
         true;
     }

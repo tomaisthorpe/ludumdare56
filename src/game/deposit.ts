@@ -65,7 +65,6 @@ export default class Deposit extends TActor {
   }
 
   public updateInfo(info: NectarDeposit) {
-    console.log("updateInfo", info);
     this.info = info;
 
     if (this.marker) {

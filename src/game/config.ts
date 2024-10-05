@@ -18,7 +18,7 @@ const config = {
     eggMultiplier: 10,
     honeyConsumptionPerBee: 0.01,
     starvationTolerance: 3,
-    nectarHarvestPerBee: 0.02,
+    nectarHarvestPerBee: 0.05,
   },
   apiary: {
     spawnRatePerBee: 0.001,
@@ -41,7 +41,7 @@ const config = {
         id: 1,
         name: "Cheeseberry",
         potential: 100,
-        startDay: 20,
+        startDay: 5,
         startMonth: 3,
         endDay: 30,
         endMonth: 4,
