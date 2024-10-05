@@ -35,7 +35,9 @@ export default class HarvestingBee
   private apiaryLocation: vec2 | null = null;
   private leaving = false;
 
-  private speed = 1;
+  private maxSpeed = 200; // Maximum speeda
+  private minSpeed = 0.5; // Minimum speed when approaching target
+  private slowdownDistance = 100; // Distance to start slowing down when leaving
 
   private sprite: TSpriteComponent;
   private easeDistance = 50; // Distance to start easing
@@ -71,6 +73,9 @@ export default class HarvestingBee
       apiaryLocation,
       vec2.fromValues(Math.random() * 30 - 15, Math.random() * 8 - 4)
     );
+
+    // Randmize the max speed between 100 and 200
+    this.maxSpeed = Math.random() * 100 + 100;
 
     this.rootComponent.transform.translation = vec3.fromValues(
       this.apiaryLocation[0],
@@ -118,12 +123,32 @@ export default class HarvestingBee
     const scale = Math.min(1, distanceToApiary / this.easeDistance);
     this.sprite.transform.scale = vec3.fromValues(scale, scale, 1);
 
-    const clampedSpeed = Math.min(this.speed, length);
+    // Calculate speed based on whether leaving or returning
+    let currentSpeed;
+    if (this.leaving) {
+      // Slow down when approaching target
+      currentSpeed =
+        this.maxSpeed -
+        (this.maxSpeed - this.minSpeed) *
+          Math.max(
+            0,
+            Math.min(
+              1,
+              (this.slowdownDistance - length) / this.slowdownDistance
+            )
+          );
+    } else {
+      // Constant speed when returning
+      currentSpeed = this.maxSpeed;
+    }
+
+    // Move at calculated speed
+    const normalizedDirection = vec2.normalize(vec2.create(), direction);
     vec3.scaleAndAdd(
       this.rootComponent.transform.translation,
       this.rootComponent.transform.translation,
-      vec3.fromValues(direction[0], direction[1], 0),
-      clampedSpeed * delta
+      vec3.fromValues(normalizedDirection[0], normalizedDirection[1], 0),
+      currentSpeed * delta
     );
 
     // Rotate towards target
