@@ -39,11 +39,18 @@ export default class GameState
     this.world!.config.mode = "2d";
   }
 
-  public async onResume(_: TEngine, depositId?: number) {
+  public async onResume(
+    _: TEngine,
+    { depositId, failure }: { depositId?: number; failure?: boolean }
+  ) {
     if (depositId !== undefined) {
       // Set the deposit to harvesting
       this.colony.nectarDeposits.find((d) => d.id === depositId)!.harvesting =
         true;
+    }
+
+    if (failure) {
+      this.colony.killBees(this.colony.numBees * 0.5);
     }
   }
 

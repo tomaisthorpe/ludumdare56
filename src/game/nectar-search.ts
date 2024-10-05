@@ -20,6 +20,7 @@ export default class NectarSearch
 {
   private garden!: Garden;
   private harvestingBeePool!: TActorPool<HarvestingBee>;
+  private time: number = -0.25;
 
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
@@ -52,6 +53,7 @@ export default class NectarSearch
 
   public async onEnter(_: TEngine, deposits: NectarDeposit[]) {
     this.garden.updateDeposits(deposits);
+    this.time = -0.25;
   }
 
   public onReady(engine: TEngine) {
@@ -83,21 +85,21 @@ export default class NectarSearch
       return;
     }
 
-    this.engine.gameState.pop(deposit.info.id);
+    this.engine.gameState.pop({ depositId: deposit.info.id });
   }
 
   private spawnHarvestingBee() {
+    // Choose random harvesting deposit
+    const deposit = this.garden.deposits.filter(
+      (d) => d.info.status == "available" && d.info.harvesting
+    )[Math.floor(Math.random() * this.garden.deposits.length)];
+
+    if (!deposit) {
+      return;
+    }
+
     const bee = this.harvestingBeePool.acquire();
     if (bee) {
-      // Choose random harvesting deposit
-      const deposit = this.garden.deposits.filter(
-        (d) => d.info.status == "available" && d.info.harvesting
-      )[Math.floor(Math.random() * this.garden.deposits.length)];
-
-      if (!deposit) {
-        return;
-      }
-
       bee.setup(
         vec2.fromValues(deposit.info.x, deposit.info.y),
         vec2.fromValues(0, 52)
@@ -106,14 +108,21 @@ export default class NectarSearch
     }
   }
 
-  public onUpdate() {
-    this.engine.updateGameContext({
-      state: "nectarSearch",
-    });
+  public onUpdate(_: TEngine, delta: number) {
+    this.time += delta / 25;
+    if (this.time > 0.5) {
+      this.engine.gameState.pop({ failure: true });
+      return;
+    }
 
     // Randomly spawn bees
     if (Math.random() < 0.1) {
       this.spawnHarvestingBee();
     }
+
+    this.engine.updateGameContext({
+      state: "nectarSearch",
+      time: this.time,
+    });
   }
 }

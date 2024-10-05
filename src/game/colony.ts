@@ -87,6 +87,19 @@ export default class Colony {
     return this.honeyReserves / this.calculateHoneyConsumption() || 0;
   }
 
+  public killBees(count: number): void {
+    // Kill a total of count bees
+    // Start with the oldest bees
+    for (let i = this.workerBees.length - 1; i >= 0; i--) {
+      if (this.workerBees[i].count <= count) {
+        count -= this.workerBees[i].count;
+        this.workerBees[i].count = 0;
+      } else {
+        this.workerBees[i].count -= count;
+      }
+    }
+  }
+
   public step(currentDate: Date): void {
     // Lay new eggs, if there are bees
     if (this.numBees > 0) {

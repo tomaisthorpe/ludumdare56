@@ -6,6 +6,8 @@ import { ColonyStats } from "./ColonyStats";
 import NectarDeposits from "./NectarDeposits";
 import GameOver from "./GameOver";
 import DepositTimeline from "./DepositTimeline";
+import SearchClock from "./SearchClock";
+
 function App() {
   return (
     <>
@@ -27,6 +29,7 @@ function App() {
           {/* <Clock /> */}
           <NectarDeposits />
           <DepositTimeline />
+          <SearchClock />
         </TGame>
       </div>
     </>

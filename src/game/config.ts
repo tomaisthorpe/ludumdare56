@@ -19,7 +19,7 @@ const config = {
   },
   startingDay: 1,
   startingMonth: 3,
-  timePerDay: 0.5,
+  timePerDay: 5,
   colony: {
     initialWorkerBees: 140,
     initialHoneyReserves: 100,
@@ -37,9 +37,9 @@ const config = {
       type: "rain",
       name: "Rain",
       startDay: 5,
-      startMonth: 3,
+      startMonth: 4,
       endDay: 25,
-      endMonth: 4,
+      endMonth: 5,
     },
   ] as Event[],
   garden: {
