@@ -9,13 +9,16 @@ import NectarDeposits from "./NectarDeposits";
 function App() {
   return (
     <>
-      <div>
+      <div style={{ width: "100%", height: "100%" }}>
         <TGame
+          width="100%"
+          height="100%"
           config={{
             renderWidth: 800,
             renderHeight: 600,
             imageRendering: "pixelated",
-            showAudioToggle: true,
+            showFullscreenToggle: false,
+            showAudioToggle: false,
           }}
           game={new game()}
         >
