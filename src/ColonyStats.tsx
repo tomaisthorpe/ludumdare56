@@ -56,6 +56,7 @@ export function ColonyStats() {
       <Group>
         <div>Honey: {colony.honeyReserves.toFixed(0)}</div>
         <div>Honey Consumption: {colony.honeyConsumption.toFixed(1)}</div>
+        <div>Honey Production: {colony.honeyProduction.toFixed(1)}</div>
         <div>
           How Long Will Honey Last: {colony.howLongWillHoneyLast.toFixed(0)}
         </div>

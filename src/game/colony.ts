@@ -5,6 +5,14 @@ interface BeeGroup {
   age: number;
 }
 
+interface NectarDeposit {
+  // This is the maximum amount of nectar that can be collected from the deposit
+  potential: number;
+
+  // Time until the deposit no longer has nectar
+  timeLeft: number;
+}
+
 export default class Colony {
   private brood: BeeGroup[] = [];
   private workerBees: BeeGroup[] = [];
@@ -12,6 +20,13 @@ export default class Colony {
   private starvationDays = 0;
 
   public layingRate = config.colony.initialLayingRate;
+
+  private nectarDeposits: NectarDeposit[] = [
+    {
+      potential: 100,
+      timeLeft: 10,
+    },
+  ];
 
   constructor() {
     // Initialize with initial worker bees, all at age 0
@@ -34,6 +49,8 @@ export default class Colony {
     return this.numBees * config.colony.honeyConsumptionPerBee;
   }
 
+  // Returns the number of days the current honey reserves will last
+  // This ignores production.
   public howLongWillHoneyLast(): number {
     return this.honeyReserves / this.calculateHoneyConsumption() || 0;
   }
@@ -55,6 +72,18 @@ export default class Colony {
       .map((group) => ({ ...group, age: group.age + 1 }))
       .filter((group) => group.age <= 42); // 6 weeks * 7 days
 
+    // Harvest nectar from deposits
+    this._honeyReserves += this.calculateHoneyProduction();
+
+    this.nectarDeposits = this.nectarDeposits.map((deposit) => ({
+      ...deposit,
+      timeLeft: deposit.timeLeft - 1,
+    }));
+
+    this.nectarDeposits = this.nectarDeposits.filter(
+      (deposit) => deposit.timeLeft > 0
+    );
+
     // Calculate honey consumption
     const honeyConsumption = this.calculateHoneyConsumption();
 
@@ -70,6 +99,25 @@ export default class Colony {
 
     // Consume honey (limited by available reserves)
     this._honeyReserves = Math.max(0, this._honeyReserves - honeyConsumption);
+  }
+
+  public calculateHoneyProduction(): number {
+    // Maximum amount of nectar that can be harvested from the deposits
+    const maxNectarHarvest = this.nectarDeposits.reduce(
+      (sum, deposit) => sum + deposit.potential,
+      0
+    );
+
+    // Amount of nectar that can be harvested from the worker bees
+    const nectarHarvested = Math.min(
+      this.workerBees.reduce(
+        (sum, group) => sum + group.count * config.colony.nectarHarvestPerBee,
+        0
+      ),
+      maxNectarHarvest
+    );
+
+    return nectarHarvested;
   }
 
   private killBeesFromStarvation(): void {

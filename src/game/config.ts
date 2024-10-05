@@ -16,6 +16,7 @@ const config = {
     eggMultiplier: 10,
     honeyConsumptionPerBee: 0.01,
     starvationTolerance: 3,
+    nectarHarvestPerBee: 0.02,
   },
   apiary: {
     spawnRatePerBee: 0.001,
