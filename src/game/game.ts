@@ -3,14 +3,20 @@ import {
   TEngine,
   TResourcePack,
   TOrthographicCamera,
+  TActorPool,
 } from "@tedengine/ted";
 import Apiary from "./apiary";
 import Bee from "./bee";
 
 class GameState extends TGameState {
+  public beePool!: TActorPool<Bee>;
+
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
     await rp.load();
+
+    this.beePool = new TActorPool<Bee>(() => new Bee(engine), 100);
+    this.spawnBee = this.spawnBee.bind(this);
 
     this.onReady(engine);
   }
@@ -25,11 +31,15 @@ class GameState extends TGameState {
     this.activeCamera = camera;
     this.addActor(camera);
 
-    const apiary = new Apiary(engine);
+    const apiary = new Apiary(engine, this.spawnBee);
     this.addActor(apiary);
+  }
 
-    const bee = new Bee(engine);
-    this.addActor(bee);
+  public spawnBee() {
+    const bee = this.beePool.acquire();
+    if (bee) {
+      this.addActor(bee);
+    }
   }
 }
 

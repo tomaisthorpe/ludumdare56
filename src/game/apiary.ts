@@ -1,5 +1,6 @@
 import {
   TActor,
+  TActorWithOnUpdate,
   TEngine,
   TOriginPoint,
   TResourcePackConfig,
@@ -10,7 +11,7 @@ import {
 import apiaryTexture from "../assets/apiary.png";
 import { vec3 } from "gl-matrix";
 
-export default class Apiary extends TActor {
+export default class Apiary extends TActor implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {
     textures: [
       {
@@ -22,7 +23,7 @@ export default class Apiary extends TActor {
     ],
   };
 
-  constructor(engine: TEngine) {
+  constructor(engine: TEngine, private spawnBee: () => void) {
     super();
 
     const sprite = new TSpriteComponent(
@@ -36,5 +37,11 @@ export default class Apiary extends TActor {
     sprite.applyTexture(engine, apiaryTexture);
 
     this.rootComponent.transform.translation = vec3.fromValues(0, 0, -50);
+  }
+
+  public async onUpdate(): Promise<void> {
+    if (Math.random() < 0.1) {
+      this.spawnBee();
+    }
   }
 }
