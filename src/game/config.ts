@@ -8,12 +8,14 @@ const config = {
   },
   startingDay: 1,
   startingMonth: 4,
-  timePerDay: 2,
+  timePerDay: 1,
   colony: {
     initialWorkerBees: 140,
-    initialHoneyReserves: 100,
+    initialHoneyReserves: 10,
     initialLayingRate: 2,
+    eggMultiplier: 10,
     honeyConsumptionPerBee: 0.01,
+    starvationTolerance: 3,
   },
   apiary: {
     spawnRatePerBee: 0.001,

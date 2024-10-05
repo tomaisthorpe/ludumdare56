@@ -37,6 +37,7 @@ class GameState extends TGameState {
     if (this.timeSinceStartDay > config.timePerDay) {
       this.timeSinceStartDay = 0;
       this.currentDate.setDate(this.currentDate.getDate() + 1);
+      this.colony.step();
     }
 
     // Share colony stats with UI
