@@ -2,6 +2,7 @@ import { useGameContext } from "@tedengine/ted";
 import styled from "styled-components";
 import config from "./game/config";
 import { NectarDeposit } from "./game/colony";
+import { useState } from "react";
 
 const monthWidth = 200;
 const Container = styled.div`
@@ -34,7 +35,7 @@ const Month = styled.div`
   flex: 0 0 ${monthWidth}px;
   border-right: 1px solid ${config.palette.persianOrange};
   width: ${monthWidth}px;
-  height: 80px;
+  height: 50px;
   align-items: flex-start;
   justify-content: center;
 `;
@@ -62,10 +63,29 @@ const DepositBar = styled.div<{ left: number; width: number; row: number }>`
   left: ${(props) => props.left}px;
   width: ${(props) => props.width}px;
   border-radius: 3px;
+  cursor: pointer;
+`;
+
+const Tooltip = styled.div<{ x: number; y: number }>`
+  position: fixed;
+  background-color: ${config.palette.persianOrange};
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 1000;
+  left: ${(props) => props.x}px;
+  top: ${(props) => props.y}px;
 `;
 
 export default function DepositTimeline() {
   const { date, state, colony, nectarDeposits } = useGameContext();
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    name: string;
+  } | null>(null);
 
   if (state !== "game" || !date || !colony || !nectarDeposits) return null;
 
@@ -149,12 +169,26 @@ export default function DepositTimeline() {
                   left={left}
                   width={width}
                   row={rowIndex}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setTooltip({
+                      x: e.clientX,
+                      y: rect.top - 30,
+                      name: deposit.name,
+                    });
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
                 />
               );
             })
           )}
         </MonthsContainer>
       </Timeline>
+      {tooltip && (
+        <Tooltip x={tooltip.x} y={tooltip.y}>
+          {tooltip.name}
+        </Tooltip>
+      )}
     </Container>
   );
 }
