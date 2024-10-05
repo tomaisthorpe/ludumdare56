@@ -97,7 +97,7 @@ export default class HarvestingBee
     this.target = null;
   }
 
-  public async onUpdate(engine: TEngine, delta: number): Promise<void> {
+  public async onUpdate(_: TEngine, delta: number): Promise<void> {
     if (!this.target) return;
 
     const direction = vec2.sub(
