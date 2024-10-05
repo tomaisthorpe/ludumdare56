@@ -7,6 +7,7 @@ import NectarDeposits from "./NectarDeposits";
 import GameOver from "./GameOver";
 import DepositTimeline from "./DepositTimeline";
 import SearchClock from "./SearchClock";
+import Notice from "./Notice";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           }}
           game={new game()}
         >
+          <Notice />
           <GameOver />
           <ColonyStats />
           {/* <Clock /> */}

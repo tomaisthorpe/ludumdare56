@@ -25,6 +25,9 @@ export default class GameState
   );
   private timeSinceStartDay = -1;
 
+  public notice?: string;
+  public noticeTime = 0;
+
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
     await rp.load();
@@ -39,6 +42,11 @@ export default class GameState
     this.world!.config.mode = "2d";
   }
 
+  public setNotice(notice: string) {
+    this.notice = notice;
+    this.noticeTime = 5;
+  }
+
   public async onResume(
     _: TEngine,
     { depositId, failure }: { depositId?: number; failure?: boolean }
@@ -50,6 +58,7 @@ export default class GameState
     }
 
     if (failure) {
+      this.setNotice("You didn't return, half your bees have died.");
       this.colony.killBees(this.colony.numBees * 0.5);
     }
   }
@@ -70,6 +79,10 @@ export default class GameState
       return;
     }
 
+    if (this.noticeTime > 0) {
+      this.noticeTime -= delta;
+    }
+
     // Share colony stats with UI
     const ctx = {
       state: "game",
@@ -86,6 +99,7 @@ export default class GameState
       nectarDeposits: this.colony.nectarDeposits,
       events: config.events,
       date: this.currentDate,
+      notice: this.noticeTime > 0 ? this.notice : undefined,
     };
 
     this.engine.updateGameContext(ctx);
