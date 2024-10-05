@@ -4,10 +4,12 @@ import {
   TResourcePack,
   TOrthographicCamera,
 } from "@tedengine/ted";
+import Apiary from "./apiary";
+import Bee from "./bee";
 
 class GameState extends TGameState {
   public async onCreate(engine: TEngine) {
-    const rp = new TResourcePack(engine);
+    const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
     await rp.load();
 
     this.onReady(engine);
@@ -22,6 +24,12 @@ class GameState extends TGameState {
     const camera = new TOrthographicCamera(engine);
     this.activeCamera = camera;
     this.addActor(camera);
+
+    const apiary = new Apiary(engine);
+    this.addActor(apiary);
+
+    const bee = new Bee(engine);
+    this.addActor(bee);
   }
 }
 
