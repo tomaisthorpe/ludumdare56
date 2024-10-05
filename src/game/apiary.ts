@@ -46,7 +46,10 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
 
   public async onUpdate(): Promise<void> {
     // Spawn bee rate depends on how many bees we have
-    const spawnRate = config.apiary.spawnRatePerBee * this.colony.numBees;
+    const spawnRate =
+      this.colony.calculateHoneyProduction() > 0
+        ? config.apiary.spawnRatePerBee * this.colony.numBees
+        : 0;
     if (Math.random() < spawnRate) {
       // Randomly spawn a bee arriving or leaving
       this.spawnBee(Math.random() < 0.5);
