@@ -62,8 +62,6 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     this.shadow.colorFilter = vec4.fromValues(0, 0, 0, 0.5);
     this.shadow.applyTexture(engine, scoutTexture);
 
-    this.shadow.attachTo(this.sprite);
-
     this.simpleController = new TTopDownController(state.events, camera);
     this.simpleController.possess(this);
   }
@@ -88,5 +86,11 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     );
 
     this.sprite.transform.rotation = q;
+
+    this.shadow.transform.translation[0] = this.sprite.transform.translation[0];
+    this.shadow.transform.translation[1] =
+      this.sprite.transform.translation[1] - 8;
+    this.shadow.transform.translation[2] = this.sprite.transform.translation[2];
+    this.shadow.transform.rotation = this.sprite.transform.rotation;
   }
 }

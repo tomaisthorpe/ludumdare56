@@ -7,6 +7,7 @@ import {
 } from "@tedengine/ted";
 import { vec3 } from "gl-matrix";
 import ScoutBee from "./scout-bee";
+import Garden from "./garden";
 
 export default class NectarSearch extends TGameState {
   public beforeWorldCreate() {
@@ -18,7 +19,7 @@ export default class NectarSearch extends TGameState {
   }
 
   public async onCreate(engine: TEngine) {
-    const rp = new TResourcePack(engine, ScoutBee.resources);
+    const rp = new TResourcePack(engine, ScoutBee.resources, Garden.resources);
     await rp.load();
 
     this.onReady(engine);
@@ -35,12 +36,15 @@ export default class NectarSearch extends TGameState {
     const cameraController = new TFixedAxisCameraController({
       distance: 20,
       axis: "z",
-      leadFactor: 0.5,
+      leadFactor: 0.8,
       maxLead: 150,
-      lerpFactor: 0.1,
+      lerpFactor: 0.99,
     });
     camera.controller = cameraController;
     cameraController.attachTo(scout.rootComponent);
+
+    const garden = new Garden(engine);
+    this.addActor(garden);
   }
 
   public onUpdate() {}
