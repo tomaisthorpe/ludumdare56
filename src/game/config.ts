@@ -19,7 +19,7 @@ const config = {
   },
   startingDay: 1,
   startingMonth: 3,
-  timePerDay: 5,
+  timePerDay: 2,
   colony: {
     initialWorkerBees: 140,
     initialHoneyReserves: 100,

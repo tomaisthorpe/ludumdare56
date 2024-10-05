@@ -20,7 +20,7 @@ export default class NectarSearch
 {
   private garden!: Garden;
   private harvestingBeePool!: TActorPool<HarvestingBee>;
-  private time: number = -0.25;
+  public time: number = -0.25;
 
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
@@ -116,7 +116,7 @@ export default class NectarSearch
     }
 
     // Randomly spawn bees
-    if (Math.random() < 0.1) {
+    if (this.time < 0.3 && Math.random() < 0.1) {
       this.spawnHarvestingBee();
     }
 
