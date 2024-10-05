@@ -53,7 +53,7 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
       20,
       32,
       TOriginPoint.Center,
-      TSpriteLayer.Foreground_0
+      TSpriteLayer.Foreground_3
     );
     this.sprite.applyTexture(engine, scoutTexture);
 
@@ -63,7 +63,7 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
       20,
       32,
       TOriginPoint.Center,
-      TSpriteLayer.Midground_0
+      TSpriteLayer.Foreground_2
     );
     this.shadow.colorFilter = vec4.fromValues(0, 0, 0, 0.5);
     this.shadow.applyTexture(engine, scoutTexture);

@@ -9,6 +9,7 @@ import {
   TGameState,
 } from "@tedengine/ted";
 import grassTexture from "../assets/grass.png";
+import apiaryTopTexture from "../assets/apiary-top.png";
 import Deposit from "./deposit";
 import { NectarDeposit } from "./colony";
 
@@ -18,6 +19,12 @@ export default class Garden extends TActor {
     textures: [
       {
         url: grassTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: apiaryTopTexture,
         config: {
           filter: TTextureFilter.Nearest,
         },
@@ -40,6 +47,16 @@ export default class Garden extends TActor {
     );
     grass.instanceUVScales = [howmanygrass, howmanygrass];
     grass.applyTexture(engine, grassTexture);
+
+    const apiaryTop = new TSpriteComponent(
+      engine,
+      this,
+      128,
+      128,
+      TOriginPoint.Center,
+      TSpriteLayer.Foreground_1
+    );
+    apiaryTop.applyTexture(engine, apiaryTopTexture);
   }
 
   public updateDeposits(deposits: NectarDeposit[]) {
