@@ -35,7 +35,7 @@ const Month = styled.div`
   flex: 0 0 ${monthWidth}px;
   border-right: 1px solid ${config.palette.persianOrange};
   width: ${monthWidth}px;
-  height: 50px;
+  height: 80px;
   align-items: flex-start;
   justify-content: center;
 `;
