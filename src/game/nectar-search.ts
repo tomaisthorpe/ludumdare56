@@ -2,6 +2,7 @@ import {
   TEngine,
   TFixedAxisCameraController,
   TGameState,
+  TGameStateWithOnEnter,
   TOrthographicCamera,
   TResourcePack,
 } from "@tedengine/ted";
@@ -9,8 +10,14 @@ import { vec3 } from "gl-matrix";
 import ScoutBee from "./scout-bee";
 import Garden from "./garden";
 import Deposit from "./deposit";
+import { NectarDeposit } from "./colony";
 
-export default class NectarSearch extends TGameState {
+export default class NectarSearch
+  extends TGameState
+  implements TGameStateWithOnEnter
+{
+  private garden!: Garden;
+
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
     this.world!.config.gravity = vec3.fromValues(0, 0, 0);
@@ -35,6 +42,10 @@ export default class NectarSearch extends TGameState {
     this.onReady(engine);
   }
 
+  public async onEnter(_: TEngine, deposits: NectarDeposit[]) {
+    this.garden.updateDeposits(deposits);
+  }
+
   public onReady(engine: TEngine) {
     const camera = new TOrthographicCamera(engine);
     this.activeCamera = camera;
@@ -53,9 +64,22 @@ export default class NectarSearch extends TGameState {
     camera.controller = cameraController;
     cameraController.attachTo(scout.rootComponent);
 
-    const garden = new Garden(engine, this);
-    this.addActor(garden);
+    this.garden = new Garden(engine, this);
+    this.addActor(this.garden);
   }
 
-  public onUpdate() {}
+  public harvestDeposit(deposit: Deposit) {
+    // Figure out type of deposit, and if it's a new one.
+    if (deposit.info.status != "available" || deposit.info.harvesting) {
+      return;
+    }
+
+    this.engine.gameState.pop(deposit.info.id);
+  }
+
+  public onUpdate() {
+    this.engine.updateGameContext({
+      state: "nectarSearch",
+    });
+  }
 }

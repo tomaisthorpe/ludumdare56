@@ -1,8 +1,8 @@
 import {
   ICamera,
   TActorWithOnUpdate,
+  TController,
   TEngine,
-  TGameState,
   TOriginPoint,
   TPawn,
   TResourcePackConfig,
@@ -15,6 +15,8 @@ import {
 } from "@tedengine/ted";
 import scoutTexture from "../assets/scout.png";
 import { quat, vec3, vec4 } from "gl-matrix";
+import Deposit from "./deposit";
+import NectarSearch from "./nectar-search";
 
 export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {
@@ -32,7 +34,11 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
   private shadow: TSpriteComponent;
   private simpleController: TTopDownController;
 
-  public constructor(engine: TEngine, state: TGameState, camera: ICamera) {
+  public constructor(
+    engine: TEngine,
+    private state: NectarSearch,
+    camera: ICamera
+  ) {
     super();
 
     this.rootComponent = new TSceneComponent(this, {
@@ -66,6 +72,29 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     this.simpleController.possess(this);
   }
 
+  public setupController(controller: TController): void {
+    super.setupController(controller);
+
+    controller.bindAction("Space", "pressed", this.spacePressed.bind(this));
+  }
+
+  private async spacePressed() {
+    // Check if we are colliding with a deposit
+    const from = vec3.clone(this.rootComponent.getWorldTransform().translation);
+    const to = vec3.add(
+      vec3.create(),
+      vec3.clone(this.rootComponent.getWorldTransform().translation),
+      vec3.fromValues(0, 0, 1)
+    );
+    const result = await this.world?.queryLine(from, to);
+
+    for (const hit of result ?? []) {
+      if (hit.actor instanceof Deposit) {
+        this.state.harvestDeposit(hit.actor as Deposit);
+      }
+    }
+  }
+
   async onUpdate(): Promise<void> {
     this.simpleController.update();
 
@@ -87,7 +116,6 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
 
     this.sprite.transform.rotation = q;
 
-    console.log(this.sprite.transform.translation[1]);
     this.shadow.transform.translation[0] = this.sprite.transform.translation[0];
     this.shadow.transform.translation[1] =
       this.sprite.transform.translation[1] -

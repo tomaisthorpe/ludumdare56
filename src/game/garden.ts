@@ -10,6 +10,7 @@ import {
 } from "@tedengine/ted";
 import grassTexture from "../assets/grass.png";
 import Deposit from "./deposit";
+import { NectarDeposit } from "./colony";
 
 const howmanygrass = 40;
 export default class Garden extends TActor {
@@ -24,7 +25,7 @@ export default class Garden extends TActor {
     ],
   };
 
-  public constructor(engine: TEngine, state: TGameState) {
+  public constructor(private engine: TEngine, private state: TGameState) {
     super();
 
     const grass = new TSpriteComponent(
@@ -37,8 +38,12 @@ export default class Garden extends TActor {
     );
     grass.instanceUVScales = [howmanygrass, howmanygrass];
     grass.applyTexture(engine, grassTexture);
+  }
 
-    const deposit = new Deposit(engine, 100, 100);
-    state.addActor(deposit);
+  public updateDeposits(deposits: NectarDeposit[]) {
+    deposits.forEach((deposit) => {
+      const d = new Deposit(this.engine, deposit.x, deposit.y, deposit);
+      this.state.addActor(d);
+    });
   }
 }

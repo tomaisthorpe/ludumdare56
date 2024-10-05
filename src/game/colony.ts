@@ -7,16 +7,31 @@ interface BeeGroup {
 
 export interface NectarDeposit {
   id: number;
+  name: string;
 
   // This is the maximum amount of nectar that can be collected from the deposit
   potential: number;
 
-  // Time until the deposit no longer has nectar
-  timeLeft: number;
-  seasonLength: number;
+  // When does the nectar start to be available
+  startDay: number;
+  startMonth: number;
 
-  // How much nectar was harvested last time
-  lastHarvest: number;
+  // When does the nectar stop being available
+  endDay: number;
+  endMonth: number;
+
+  status: "unavailable" | "available";
+  harvesting?: boolean;
+
+  // For UI only
+  lastHarvest?: number;
+
+  // Time left in days
+  timeLeft?: number;
+
+  // Position for use in nectar search
+  x: number;
+  y: number;
 }
 
 export default class Colony {
@@ -27,15 +42,7 @@ export default class Colony {
 
   public layingRate = config.colony.initialLayingRate;
 
-  public nectarDeposits: NectarDeposit[] = [
-    {
-      id: 0,
-      potential: 100,
-      timeLeft: 10,
-      seasonLength: 10,
-      lastHarvest: 0,
-    },
-  ];
+  public nectarDeposits: NectarDeposit[] = config.garden.deposits;
 
   constructor() {
     // Initialize with initial worker bees, all at age 0
@@ -64,7 +71,7 @@ export default class Colony {
     return this.honeyReserves / this.calculateHoneyConsumption() || 0;
   }
 
-  public step(): void {
+  public step(currentDate: Date): void {
     // Lay new eggs
     const newEggs = Math.floor(this.layingRate * config.colony.eggMultiplier);
     this.brood.unshift({ count: newEggs, age: 0 });
@@ -81,17 +88,32 @@ export default class Colony {
       .map((group) => ({ ...group, age: group.age + 1 }))
       .filter((group) => group.age <= 42); // 6 weeks * 7 days
 
+    // Ensure nectar deposits are available/unavailable depending on the dates
+    this.nectarDeposits.forEach((deposit) => {
+      const startDate = new Date(
+        currentDate.getFullYear(),
+        deposit.startMonth,
+        deposit.startDay
+      );
+      const endDate = new Date(
+        currentDate.getFullYear(),
+        deposit.endMonth,
+        deposit.endDay
+      );
+
+      if (currentDate >= startDate && currentDate <= endDate) {
+        deposit.status = "available";
+      } else {
+        deposit.status = "unavailable";
+      }
+
+      deposit.timeLeft = Math.ceil(
+        (endDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+    });
+
     // Harvest nectar from deposits
     this._honeyReserves += this.calculateHoneyProduction();
-
-    this.nectarDeposits = this.nectarDeposits.map((deposit) => ({
-      ...deposit,
-      timeLeft: deposit.timeLeft - 1,
-    }));
-
-    this.nectarDeposits = this.nectarDeposits.filter(
-      (deposit) => deposit.timeLeft > 0
-    );
 
     // Calculate honey consumption
     const honeyConsumption = this.calculateHoneyConsumption();
@@ -113,9 +135,17 @@ export default class Colony {
   public calculateHoneyProduction(): number {
     // Maximum amount of nectar that can be harvested from the deposits
     const maxNectarHarvest = this.nectarDeposits.reduce(
-      (sum, deposit) => sum + deposit.potential,
+      (sum, deposit) =>
+        sum +
+        (deposit.status === "available" && deposit.harvesting
+          ? deposit.potential
+          : 0),
       0
     );
+
+    if (maxNectarHarvest === 0) {
+      return 0;
+    }
 
     // Amount of nectar that can be harvested from the worker bees
     const nectarHarvested = Math.min(

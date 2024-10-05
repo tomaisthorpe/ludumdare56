@@ -1,3 +1,5 @@
+import { NectarDeposit } from "./colony";
+
 const config = {
   palette: {
     onyx: "#393d3f",
@@ -7,7 +9,7 @@ const config = {
     persianOrange: "#cb9152",
   },
   startingDay: 1,
-  startingMonth: 4,
+  startingMonth: 3,
   timePerDay: 2,
   colony: {
     initialWorkerBees: 140,
@@ -20,6 +22,34 @@ const config = {
   },
   apiary: {
     spawnRatePerBee: 0.001,
+  },
+  garden: {
+    deposits: [
+      {
+        id: 0,
+        name: "Blueberry",
+        potential: 100,
+        startDay: 1,
+        startMonth: 3,
+        endDay: 30,
+        endMonth: 3,
+        status: "unavailable",
+        x: 100,
+        y: 100,
+      },
+      {
+        id: 1,
+        name: "Cheeseberry",
+        potential: 100,
+        startDay: 20,
+        startMonth: 3,
+        endDay: 30,
+        endMonth: 4,
+        status: "unavailable",
+        x: -200,
+        y: 200,
+      },
+    ] as NectarDeposit[],
   },
 };
 

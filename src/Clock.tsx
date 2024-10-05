@@ -64,8 +64,9 @@ const percentOfMonthPassed = (date: Date) => {
 };
 
 export default function Clock() {
-  const { date } = useGameContext();
+  const { date, state } = useGameContext();
 
+  if (state !== "game") return null;
   if (!date) return null;
 
   return (

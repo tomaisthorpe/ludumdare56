@@ -10,7 +10,9 @@ import {
   TSceneComponent,
 } from "@tedengine/ted";
 import depositTexture from "../assets/flower.png";
+import hereBeNectarTexture from "../assets/here-be-nectar.png";
 import { vec3 } from "gl-matrix";
+import { NectarDeposit } from "./colony";
 
 export default class Deposit extends TActor {
   public static resources: TResourcePackConfig = {
@@ -21,10 +23,21 @@ export default class Deposit extends TActor {
           filter: TTextureFilter.Nearest,
         },
       },
+      {
+        url: hereBeNectarTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
     ],
   };
 
-  public constructor(engine: TEngine, x: number, y: number) {
+  public constructor(
+    engine: TEngine,
+    x: number,
+    y: number,
+    public info: NectarDeposit
+  ) {
     super();
 
     this.rootComponent = new TSceneComponent(this, {
@@ -43,6 +56,19 @@ export default class Deposit extends TActor {
       TSpriteLayer.Midground_0
     );
     sprite.applyTexture(engine, depositTexture);
+
+    // If status is new, add the marker to show player
+    if (info.status === "available" && !info.harvesting) {
+      const marker = new TSpriteComponent(
+        engine,
+        this,
+        16,
+        33,
+        TOriginPoint.Center,
+        TSpriteLayer.Midground_1
+      );
+      marker.applyTexture(engine, hereBeNectarTexture);
+    }
 
     this.rootComponent.transform.translation = vec3.fromValues(x, y, 0);
   }

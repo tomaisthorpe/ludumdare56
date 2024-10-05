@@ -4,20 +4,22 @@ import {
   TResourcePack,
   TOrthographicCamera,
   TActorPool,
+  TGameStateWithOnResume,
 } from "@tedengine/ted";
 import Apiary from "./apiary";
 import Bee from "./bee";
 import Colony from "./colony";
 import config from "./config";
 import NectarSearch from "./nectar-search";
-class GameState extends TGameState {
+
+class GameState extends TGameState implements TGameStateWithOnResume {
   public beePool!: TActorPool<Bee>;
   public colony = new Colony();
 
   public currentDate: Date = new Date(
     new Date().setMonth(config.startingMonth, config.startingDay)
   );
-  private timeSinceStartDay = 0;
+  private timeSinceStartDay = -1;
 
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
@@ -33,16 +35,30 @@ class GameState extends TGameState {
     this.world!.config.mode = "2d";
   }
 
+  public async onResume(_: TEngine, depositId?: number) {
+    if (depositId !== undefined) {
+      // Set the deposit to harvesting
+      console.log("depositId", depositId);
+      console.log(this.colony.nectarDeposits);
+      this.colony.nectarDeposits.find((d) => d.id === depositId)!.harvesting =
+        true;
+    }
+  }
+
   public onUpdate(_: TEngine, delta: number) {
-    this.timeSinceStartDay += delta;
-    if (this.timeSinceStartDay > config.timePerDay) {
+    if (
+      this.timeSinceStartDay > config.timePerDay ||
+      this.timeSinceStartDay < 0
+    ) {
       this.timeSinceStartDay = 0;
       this.currentDate.setDate(this.currentDate.getDate() + 1);
-      this.colony.step();
+      this.colony.step(this.currentDate);
     }
+    this.timeSinceStartDay += delta;
 
     // Share colony stats with UI
     const ctx = {
+      state: "game",
       colony: {
         numBees: this.colony.numBees,
         numBrood: this.colony.numBrood,
@@ -78,6 +94,12 @@ class GameState extends TGameState {
       }
       this.colony.layingRate = event.payload.rate;
     });
+
+    this.events.addListener<{
+      type: "GO_SEARCH_FOR_NECTAR";
+    }>("GO_SEARCH_FOR_NECTAR", () => {
+      this.engine.gameState.push("nectarSearch", this.colony.nectarDeposits);
+    });
   }
 
   public spawnBee(isLeaving: boolean) {
@@ -94,7 +116,7 @@ const gameConfig = {
     game: GameState,
     nectarSearch: NectarSearch,
   },
-  defaultState: "nectarSearch",
+  defaultState: "game",
 };
 
 new TEngine(gameConfig, self);

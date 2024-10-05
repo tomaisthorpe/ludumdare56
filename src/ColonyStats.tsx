@@ -38,8 +38,9 @@ const Stat = styled.div`
 `;
 
 export function ColonyStats() {
-  const { colony } = useGameContext();
+  const { colony, state } = useGameContext();
 
+  if (state !== "game") return null;
   if (!colony) return null;
   return (
     <Container>
