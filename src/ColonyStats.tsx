@@ -24,10 +24,11 @@ const Group = styled.div`
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
-const GroupLabel = styled.div`
+const GroupLabel = styled.div<{ isRaining: boolean }>`
   font-weight: bold;
   font-size: 24px;
-  color: ${config.palette.onyx};
+  color: ${(props) =>
+    props.isRaining ? config.palette.vanilla : config.palette.onyx};
   margin-top: 20px;
 `;
 
@@ -88,13 +89,13 @@ const HoneyAmount = styled.span`
 `;
 
 export function ColonyStats() {
-  const { colony, state } = useGameContext();
+  const { colony, state, isRaining } = useGameContext();
 
   if (state !== "game") return null;
   if (!colony) return null;
   return (
     <Container>
-      <GroupLabel>Honey</GroupLabel>
+      <GroupLabel isRaining={isRaining}>Honey</GroupLabel>
       <Group>
         <HoneyBarContainer>
           <HoneyBarFill
@@ -131,7 +132,7 @@ export function ColonyStats() {
           of honey as your current colony size.
         </Info>
       </Group>
-      <GroupLabel>Colony</GroupLabel>
+      <GroupLabel isRaining={isRaining}>Colony</GroupLabel>
       <Group>
         <Stat>
           <Label>Bees:</Label> {colony.numBees}
