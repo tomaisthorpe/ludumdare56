@@ -51,6 +51,7 @@ const HoneyBarContainer = styled.div`
 const HoneyBarFill = styled.div`
   height: 100%;
   background-color: ${config.palette.blue};
+  transition: width 0.5s linear;
 `;
 
 const HoneyText = styled.div`

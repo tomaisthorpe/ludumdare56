@@ -27,10 +27,10 @@ const config = {
     initialWorkerBees: 1400,
     initialHoneyReserves: 1500,
     initialLayingRate: 20,
-    eggMultiplier: 40,
-    honeyConsumptionPerBee: 0.15,
+    eggMultiplier: 20,
+    honeyConsumptionPerBee: 0.05,
     starvationTolerance: 3,
-    nectarHarvestPerBee: 0.5,
+    nectarHarvestPerBee: 0.4,
   },
   apiary: {
     spawnRatePerBee: 0.00005,
