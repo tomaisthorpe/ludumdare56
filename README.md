@@ -1,27 +1,11 @@
-# React + TypeScript + Vite
+# Ludum Dare 56 - Honey for the Winter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+My entry for Ludum Dare 56, built with TypeScript and my [custom game engine](https://github.com/tomaisthorpe/tedengine).
 
-Currently, two official plugins are available:
+The goal of the game is to build enough honey reserves for your colony to survive through the coming winter. You must look for nectar sources when they become available, and manage the size of your colony to make the most of the nectar that’s available at the time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Development
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+npm run dev
 ```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
