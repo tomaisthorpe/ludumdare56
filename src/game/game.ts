@@ -113,6 +113,12 @@ export default class GameState
       }
     }
 
+    // Calculate days left in the game
+    const daysLeft =
+      (new Date(new Date().setMonth(config.endMonth, 1)).getTime() -
+        this.currentDate.getTime()) /
+      (1000 * 60 * 60 * 24);
+
     // Share colony stats with UI
     const ctx = {
       state: "game",
@@ -129,6 +135,7 @@ export default class GameState
       nectarDeposits: this.colony.nectarDeposits,
       events: config.events,
       date: this.currentDate,
+      daysLeft,
       notice: this.noticeTime > 0 ? this.notice : undefined,
     };
 

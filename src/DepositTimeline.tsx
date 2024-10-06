@@ -91,8 +91,24 @@ const Tooltip = styled.div<{ x: number; y: number }>`
   top: ${(props) => props.y}px;
 `;
 
+const DaysLeft = styled.div`
+  padding: 5px 40px 0px;
+  border-radius: 10px 10px 0 0;
+  font-size: 12px;
+  color: ${config.palette.onyx};
+  font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  display: inline-block;
+  left: 0;
+  background-color: ${config.palette.earthYellow}cc;
+  border: 2px solid ${config.palette.persianOrange};
+  border-bottom: none;
+`;
+
 export default function DepositTimeline() {
-  const { date, state, colony, nectarDeposits, events } = useGameContext();
+  const { date, state, colony, nectarDeposits, events, daysLeft } =
+    useGameContext();
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -165,6 +181,7 @@ export default function DepositTimeline() {
 
   return (
     <Container>
+      <DaysLeft>{daysLeft.toFixed(0)} days left</DaysLeft>
       <Timeline>
         <MonthsContainer left={containerLeft}>
           {monthNames.map((monthName, index) => (
