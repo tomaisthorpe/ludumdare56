@@ -31,6 +31,15 @@ const Subtitle = styled.h2`
   color: ${config.palette.vanilla};
 `;
 
+const Bee = styled.img`
+  display: block;
+  width: 64px;
+  height: 40px;
+  image-rendering: pixelated;
+  transform: rotate(180deg);
+  margin-top: 20px;
+`;
+
 export default function GameOver() {
   const { state, success, reason } = useGameContext();
   if (!state || state != "gameOver" || success === undefined || !reason) {
@@ -45,6 +54,7 @@ export default function GameOver() {
         <br />
         Refresh to try again.
       </Subtitle>
+      {!success && <Bee src="/bee.png" />}
     </Container>
   );
 }
