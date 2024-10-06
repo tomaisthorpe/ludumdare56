@@ -1,6 +1,7 @@
 import {
   ICamera,
   TActorWithOnUpdate,
+  TAnimatedSpriteComponent,
   TController,
   TEngine,
   TOriginPoint,
@@ -14,6 +15,7 @@ import {
   TTopDownController,
 } from "@tedengine/ted";
 import scoutTexture from "../assets/scout.png";
+import scoutAnimation from "../assets/scout-animated-sheet.png";
 import { quat, vec3, vec4 } from "gl-matrix";
 import Deposit from "./deposit";
 import NectarSearch from "./nectar-search";
@@ -23,6 +25,12 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     textures: [
       {
         url: scoutTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: scoutAnimation,
         config: {
           filter: TTextureFilter.Nearest,
         },
@@ -48,15 +56,19 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     });
     this.rootComponent.collider = new TSphereCollider(16, "Player");
 
-    this.sprite = new TSpriteComponent(
+    this.sprite = new TAnimatedSpriteComponent(
       engine,
       this,
       20,
       32,
       TOriginPoint.Center,
-      TSpriteLayer.Foreground_3
+      TSpriteLayer.Foreground_3,
+      {
+        frameCount: 4,
+        frameRate: 20,
+      }
     );
-    this.sprite.applyTexture(engine, scoutTexture);
+    this.sprite.applyTexture(engine, scoutAnimation);
 
     this.shadow = new TSpriteComponent(
       engine,
