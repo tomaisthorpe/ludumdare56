@@ -23,6 +23,7 @@ export default class NectarSearch
   public time: number = -0.25;
 
   private scoutBee!: ScoutBee;
+  private overDeposit: Deposit | null = null;
 
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
@@ -123,12 +124,15 @@ export default class NectarSearch
     }
   }
 
-  public onUpdate(_: TEngine, delta: number) {
+  public async onUpdate(_: TEngine, delta: number) {
     this.time += delta / 25;
     if (this.time > 0.5) {
       this.engine.gameState.pop({ failure: true });
       return;
     }
+
+    // Check if we are colliding with a deposit
+    this.overDeposit = await this.scoutBee.overDeposit();
 
     // Randomly spawn bees
     if (this.time < 0.3 && Math.random() < 0.1) {
@@ -138,6 +142,7 @@ export default class NectarSearch
     this.engine.updateGameContext({
       state: "nectarSearch",
       time: this.time,
+      overDeposit: this.overDeposit?.info,
     });
   }
 }

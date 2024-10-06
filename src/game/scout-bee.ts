@@ -91,6 +91,26 @@ export default class ScoutBee extends TPawn implements TActorWithOnUpdate {
     controller.bindAction("Space", "pressed", this.spacePressed.bind(this));
   }
 
+  public async overDeposit() {
+    // Check if we are colliding with a deposit
+    const from = vec3.clone(this.rootComponent.getWorldTransform().translation);
+    const to = vec3.add(
+      vec3.create(),
+      vec3.clone(this.rootComponent.getWorldTransform().translation),
+      vec3.fromValues(0, 0, 1)
+    );
+    const result = await this.world?.queryLine(from, to);
+    if (result) {
+      for (const hit of result) {
+        if (hit.actor instanceof Deposit) {
+          return hit.actor as Deposit;
+        }
+      }
+    }
+
+    return null;
+  }
+
   private async spacePressed() {
     // Check if we are colliding with a deposit
     const from = vec3.clone(this.rootComponent.getWorldTransform().translation);

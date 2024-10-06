@@ -9,6 +9,7 @@ import DepositTimeline from "./DepositTimeline";
 import SearchClock from "./SearchClock";
 import Notice from "./Notice";
 import Instructions from "./Instructions";
+import DepositInformation from "./DepositInformation";
 function App() {
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
           <DepositTimeline />
           <SearchClock />
           <Instructions />
+          <DepositInformation />
         </TGame>
       </div>
     </>
