@@ -126,7 +126,7 @@ const config = {
         name: "Heather",
         potential: 250,
         startDay: 25,
-        startMonth: 2,
+        startMonth: 5,
         endDay: 12,
         endMonth: 8,
         status: "unavailable",
