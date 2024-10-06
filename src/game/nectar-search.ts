@@ -81,6 +81,10 @@ export default class NectarSearch
       leadFactor: 0.8,
       maxLead: 150,
       lerpFactor: 0.99,
+      bounds: {
+        min: vec3.fromValues(-1380, -1480, -100),
+        max: vec3.fromValues(1380, 1480, 100),
+      },
     });
     camera.controller = cameraController;
     cameraController.attachTo(this.scoutBee.rootComponent);

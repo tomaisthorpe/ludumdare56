@@ -7,6 +7,8 @@ import {
   TActor,
   TEngine,
   TActorWithOnUpdate,
+  TSceneComponent,
+  TBoxCollider,
 } from "@tedengine/ted";
 import grassTexture from "../assets/grass.png";
 import apiaryTopTexture from "../assets/apiary-top.png";
@@ -197,5 +199,48 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
         }
       }
     }
+
+    this.state.addActor(
+      new Wall((-128 * howmanygrass) / 2, 0, 128, 128 * howmanygrass)
+    );
+    this.state.addActor(
+      new Wall((128 * (howmanygrass - 1)) / 2, 0, 128, 128 * howmanygrass)
+    );
+    this.state.addActor(
+      new Wall(
+        (-128 * howmanygrass) / 2,
+        (-128 * howmanygrass) / 2,
+        128 * howmanygrass,
+        128
+      )
+    );
+    this.state.addActor(
+      new Wall(
+        (-128 * howmanygrass) / 2,
+        (128 * (howmanygrass - 1)) / 2,
+        128 * howmanygrass,
+        128
+      )
+    );
+  }
+}
+
+class Wall extends TActor {
+  public constructor(x: number, y: number, width: number, height: number) {
+    super();
+
+    const box = new TSceneComponent(this, {
+      mass: 0,
+      fixedRotation: true,
+      friction: 0,
+    });
+    box.transform.translation = vec3.fromValues(
+      x + width / 2,
+      y + height / 2,
+      -20
+    );
+    this.rootComponent = box;
+
+    box.collider = new TBoxCollider(width, height, 40, "Solid");
   }
 }
