@@ -11,12 +11,17 @@ import {
 import grassTexture from "../assets/grass.png";
 import apiaryTopTexture from "../assets/apiary-top.png";
 import whiteTexture from "../assets/white.png";
+import treeTexture from "../assets/tree.png";
+import bushTexture from "../assets/bush.png";
+import rockTexture from "../assets/rock.png";
 import Deposit from "./deposit";
 import { NectarDeposit } from "./colony";
-import { vec4 } from "gl-matrix";
+import { quat, vec3, vec4 } from "gl-matrix";
 import NectarSearch from "./nectar-search";
+import Noise from "noise-ts";
 
 const howmanygrass = 40;
+const gardenSize = howmanygrass * 128;
 export default class Garden extends TActor implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {
     textures: [
@@ -34,6 +39,24 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
       },
       {
         url: whiteTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: treeTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: bushTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
+      {
+        url: rockTexture,
         config: {
           filter: TTextureFilter.Nearest,
         },
@@ -58,6 +81,8 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
     );
     grass.instanceUVScales = [howmanygrass, howmanygrass];
     grass.applyTexture(engine, grassTexture);
+
+    this.generateGarden();
 
     this.white = new TSpriteComponent(
       engine,
@@ -111,5 +136,67 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
       this.deposits.push(d);
       this.state.addActor(d);
     });
+  }
+
+  private generateGarden() {
+    const noise = new Noise(2);
+
+    for (let x = -gardenSize / 200; x < gardenSize / 200; x++) {
+      for (let y = -gardenSize / 200; y < gardenSize / 200; y++) {
+        const value = noise.simplex2(x, y);
+
+        console.log(x, y, value);
+        if (value > 0.9) {
+          const t = new TSpriteComponent(
+            this.engine,
+            this,
+            256,
+            256,
+            TOriginPoint.Center,
+            TSpriteLayer.Background_1
+          );
+          t.transform.translation = vec3.fromValues(x * 100, y * 100, 0);
+
+          // Randomly rotate the tree
+          const rotation = Math.random() * Math.PI * 2;
+          t.transform.rotation = quat.fromEuler(
+            quat.create(),
+            0,
+            0,
+            (rotation * 180) / Math.PI
+          );
+
+          t.applyTexture(this.engine, treeTexture);
+        } else if (value > 0.8) {
+          const t = new TSpriteComponent(
+            this.engine,
+            this,
+            128,
+            48 * 2,
+            TOriginPoint.Center,
+            TSpriteLayer.Background_1
+          );
+          t.transform.translation = vec3.fromValues(x * 100, y * 100, 0);
+          t.transform.rotation = quat.fromEuler(
+            quat.create(),
+            0,
+            0,
+            (Math.random() * Math.PI * 2 * 180) / Math.PI
+          );
+          t.applyTexture(this.engine, bushTexture);
+        } else if (value > 0.75) {
+          const t = new TSpriteComponent(
+            this.engine,
+            this,
+            96,
+            96,
+            TOriginPoint.Center,
+            TSpriteLayer.Background_1
+          );
+          t.transform.translation = vec3.fromValues(x * 100, y * 100, 0);
+          t.applyTexture(this.engine, rockTexture);
+        }
+      }
+    }
   }
 }
