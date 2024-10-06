@@ -24,6 +24,7 @@ const Deposit = styled.div`
   padding: 5px 10px;
   border: 2px solid ${config.palette.persianOrange};
   border-radius: 5px;
+  max-width: 200px;
 `;
 
 const DepositLabel = styled.div`
@@ -54,6 +55,41 @@ const Notice = styled.div`
   font-size: 1em;
 `;
 
+const DepositBarContainer = styled.div`
+  width: 100%;
+  height: 20px;
+  background-color: transparent;
+  border: 2px solid ${config.palette.blue};
+  position: relative;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 5px;
+`;
+
+const DepositBarFill = styled.div`
+  height: 100%;
+  background-color: ${config.palette.blue};
+`;
+
+const DepositBarText = styled.div`
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+`;
+
+const UnderutilizedNotice = styled.div`
+  font-size: 12px;
+  color: ${config.palette.onyx};
+  margin-top: 5px;
+  font-style: italic;
+`;
+
 export default function NectarDeposits() {
   const { nectarDeposits, state, isRaining } = useGameContext();
   const events = useEventQueue();
@@ -70,6 +106,12 @@ export default function NectarDeposits() {
       deposit.status === "available" && !deposit.harvesting
   );
 
+  const isUnderutilized = (deposit: NectarDeposit) => {
+    return (
+      deposit.harvesting && (deposit.lastHarvest ?? 0) < deposit.potential * 0.9
+    );
+  };
+
   return (
     <Container>
       <Deposits>
@@ -79,10 +121,30 @@ export default function NectarDeposits() {
             <Deposit key={deposit.id}>
               <DepositLabel>{deposit.name}</DepositLabel>
               {deposit.harvesting && (
-                <div>
-                  Harvesting
-                  {deposit.lastHarvest?.toFixed(0) ?? 0} / {deposit.potential}
-                </div>
+                <>
+                  <div>Harvesting</div>
+                  <DepositBarContainer>
+                    <DepositBarFill
+                      style={{
+                        width: `${Math.min(
+                          ((deposit.lastHarvest ?? 0) / deposit.potential) *
+                            100,
+                          100
+                        )}%`,
+                      }}
+                    />
+                    <DepositBarText>
+                      {deposit.lastHarvest?.toFixed(0) ?? 0} /{" "}
+                      {deposit.potential}
+                    </DepositBarText>
+                  </DepositBarContainer>
+                  {isUnderutilized(deposit) && (
+                    <UnderutilizedNotice>
+                      This deposit isn't being fully utilized. Consider breeding
+                      more bees!
+                    </UnderutilizedNotice>
+                  )}
+                </>
               )}
               {!deposit.harvesting && (
                 <>
