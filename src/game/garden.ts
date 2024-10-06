@@ -20,7 +20,7 @@ import { quat, vec3, vec4 } from "gl-matrix";
 import NectarSearch from "./nectar-search";
 import Noise from "noise-ts";
 
-const howmanygrass = 40;
+const howmanygrass = 28;
 const gardenSize = howmanygrass * 128;
 export default class Garden extends TActor implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {

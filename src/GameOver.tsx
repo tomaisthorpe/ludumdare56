@@ -32,16 +32,16 @@ const Subtitle = styled.h2`
 `;
 
 export default function GameOver() {
-  const { state } = useGameContext();
-  if (!state || state != "gameOver") {
+  const { state, success, reason } = useGameContext();
+  if (!state || state != "gameOver" || success === undefined || !reason) {
     return null;
   }
 
   return (
     <Container>
-      <Title>Game Over</Title>
+      <Title>{success ? "You Win!" : "Game Over"}</Title>
       <Subtitle>
-        You lost. Your bees are dead.
+        {reason}
         <br />
         Refresh to try again.
       </Subtitle>

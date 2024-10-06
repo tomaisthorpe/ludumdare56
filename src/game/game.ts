@@ -85,12 +85,32 @@ export default class GameState
     this.timeSinceStartDay += delta;
 
     if (this.colony.numBees <= 0 && this.colony.numBrood <= 0) {
-      this.engine.gameState.switch("gameOver");
+      this.engine.gameState.switch("gameOver", {
+        success: false,
+        reason: "You lost. All your bees are dead.",
+      });
       return;
     }
 
     if (this.noticeTime > 0) {
       this.noticeTime -= delta;
+    }
+
+    if (this.currentDate.getMonth() === config.endMonth) {
+      if (this.colony.honeyReserves >= config.successThreshold) {
+        this.engine.gameState.switch("gameOver", {
+          success: true,
+          reason: "You gathered enough honey to survive the winter!",
+          honeyReserves: this.colony.honeyReserves,
+        });
+        return;
+      } else {
+        this.engine.gameState.switch("gameOver", {
+          success: false,
+          reason: "You didn't gather enough honey to survive the winter.",
+        });
+        return;
+      }
     }
 
     // Share colony stats with UI

@@ -10,6 +10,8 @@ export type Event = {
 };
 
 const config = {
+  successThreshold: 6 * 30,
+  endMonth: 9,
   palette: {
     onyx: "#393d3f",
     blue: "#62929e",
@@ -93,7 +95,7 @@ const config = {
         endMonth: 5,
         status: "unavailable",
         x: -1000,
-        y: 800,
+        y: 20,
       },
       {
         id: 2,
@@ -104,8 +106,8 @@ const config = {
         endDay: 15,
         endMonth: 7,
         status: "unavailable",
-        x: 1500,
-        y: -800,
+        x: 1120,
+        y: -700,
       },
       {
         id: 3,
@@ -116,7 +118,7 @@ const config = {
         endDay: 15,
         endMonth: 8,
         status: "unavailable",
-        x: 1500,
+        x: -250,
         y: 800,
       },
       {
@@ -124,12 +126,12 @@ const config = {
         name: "Heather",
         potential: 250,
         startDay: 25,
-        startMonth: 7,
+        startMonth: 2,
         endDay: 12,
         endMonth: 8,
         status: "unavailable",
-        x: 1500,
-        y: 800,
+        x: 200,
+        y: -800,
       },
     ] as NectarDeposit[],
   },
