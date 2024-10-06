@@ -12,6 +12,7 @@ import {
 import apiaryTexture from "../assets/apiary.png";
 import backgroundTexture from "../assets/background.png";
 import rainTexture from "../assets/rain.png";
+import cloudTexture from "../assets/cloud.png";
 import GameState from "./game";
 
 import { vec3, vec4 } from "gl-matrix";
@@ -38,6 +39,12 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
           filter: TTextureFilter.Nearest,
         },
       },
+      {
+        url: cloudTexture,
+        config: {
+          filter: TTextureFilter.Nearest,
+        },
+      },
     ],
   };
 
@@ -47,6 +54,9 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
 
   private sprite: TSpriteComponent;
   private background: TSpriteComponent;
+  private cloud: TSpriteComponent;
+  private cloudPosition: number = -600; // Starting position off-screen to the left
+  private cloudSpeed: number = 10; // Pixels per second
 
   constructor(
     engine: TEngine,
@@ -75,6 +85,22 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
       TSpriteLayer.Background_0
     );
     this.background.applyTexture(engine, backgroundTexture);
+
+    this.cloud = new TSpriteComponent(
+      engine,
+      this,
+      196 * 2,
+      128 * 2,
+      TOriginPoint.Center,
+      TSpriteLayer.Background_1
+    );
+    this.cloud.colorFilter = vec4.fromValues(1, 1, 1, 0.2);
+    this.cloud.applyTexture(engine, cloudTexture);
+    this.cloud.transform.translation = vec3.fromValues(
+      this.cloudPosition,
+      Math.random() * 150 + 150,
+      0
+    );
 
     // Rain
     this.rain = new TParticlesComponent(
@@ -110,7 +136,7 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
     this.rootComponent.transform.translation = vec3.fromValues(0, 0, -50);
   }
 
-  public async onUpdate(): Promise<void> {
+  public async onUpdate(_: TEngine, deltaTime: number): Promise<void> {
     // Spawn bee rate depends on how many bees we have
     const spawnRate =
       this.colony.calculateHoneyProduction(this.state.currentDate) > 0 &&
@@ -149,5 +175,19 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
 
     // Update rain visibility
     this.rain.shouldRender = this.rainTransition > 0;
+
+    // Update cloud position
+    this.cloudPosition += this.cloudSpeed * deltaTime;
+    if (this.cloudPosition > 900) {
+      // 800 (screen width) + 100 (half cloud width)
+      this.cloudPosition = -500; // Reset to starting position
+      // Randomise cloud y between 150 and 250
+      this.cloud.transform.translation[1] = Math.random() * 150 + 150;
+    }
+    this.cloud.transform.translation = vec3.fromValues(
+      this.cloudPosition,
+      this.cloud.transform.translation[1],
+      0
+    );
   }
 }
