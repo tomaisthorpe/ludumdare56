@@ -22,6 +22,8 @@ export default class NectarSearch
   private harvestingBeePool!: TActorPool<HarvestingBee>;
   public time: number = -0.25;
 
+  private scoutBee!: ScoutBee;
+
   public beforeWorldCreate() {
     this.world!.config.mode = "2d";
     this.world!.config.gravity = vec3.fromValues(0, 0, 0);
@@ -54,6 +56,15 @@ export default class NectarSearch
   public async onEnter(_: TEngine, deposits: NectarDeposit[]) {
     this.garden.updateDeposits(deposits);
     this.time = -0.25;
+
+    // Reset the player's position
+    this.scoutBee.rootComponent.transform.translation = vec3.fromValues(
+      0,
+      0,
+      0
+    );
+    this.scoutBee.rootComponent.setLinearVelocity(vec3.fromValues(0, 0, 0));
+    this.scoutBee.rootComponent.applyTransform();
   }
 
   public onReady(engine: TEngine) {
@@ -61,8 +72,8 @@ export default class NectarSearch
     this.activeCamera = camera;
     this.addActor(camera);
 
-    const scout = new ScoutBee(engine, this, camera);
-    this.addActor(scout);
+    this.scoutBee = new ScoutBee(engine, this, camera);
+    this.addActor(this.scoutBee);
 
     const cameraController = new TFixedAxisCameraController({
       distance: 20,
@@ -72,7 +83,7 @@ export default class NectarSearch
       lerpFactor: 0.99,
     });
     camera.controller = cameraController;
-    cameraController.attachTo(scout.rootComponent);
+    cameraController.attachTo(this.scoutBee.rootComponent);
 
     this.garden = new Garden(engine, this);
     this.addActor(this.garden);

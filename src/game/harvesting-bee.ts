@@ -98,6 +98,7 @@ export default class HarvestingBee
   }
 
   public async onUpdate(_: TEngine, delta: number): Promise<void> {
+    if (!this.acquired) return;
     if (!this.target) return;
 
     const direction = vec2.sub(
@@ -116,6 +117,7 @@ export default class HarvestingBee
         this.leaving = false;
       } else {
         this.pool.release(this);
+        return;
       }
     }
 
