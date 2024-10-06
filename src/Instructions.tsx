@@ -81,7 +81,7 @@ export default function Instructions() {
         <h2>Controls</h2>
         <ul>
           <li>
-            <strong>Arrow Keys / WASD</strong> - Move the bee
+            <strong>WASD</strong> - Move the bee
           </li>
           <li>
             <strong>Space</strong> - Harvest nectar (when hovering over a
