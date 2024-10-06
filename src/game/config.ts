@@ -26,7 +26,7 @@ const config = {
   colony: {
     initialWorkerBees: 1400,
     initialHoneyReserves: 1500,
-    initialLayingRate: 20,
+    initialLayingRate: 2,
     eggMultiplier: 20,
     honeyConsumptionPerBee: 0.05,
     starvationTolerance: 3,

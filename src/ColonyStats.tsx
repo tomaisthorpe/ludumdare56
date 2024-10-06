@@ -109,15 +109,17 @@ export function ColonyStats() {
               )}%`,
             }}
           />
-          <HoneyText>{colony.honeyReserves.toFixed(0)}g</HoneyText>
+          <HoneyText>
+            {numberWithCommas(colony.honeyReserves.toFixed(0))}g
+          </HoneyText>
         </HoneyBarContainer>
         <div>
-          <Label>Consumption:</Label> {colony.honeyConsumption.toFixed(0)}g per
-          day
+          <Label>Consumption:</Label>{" "}
+          {numberWithCommas(colony.honeyConsumption.toFixed(0))}g per day
         </div>
         <div>
-          <Label>Production:</Label> {colony.honeyProduction.toFixed(0)}g per
-          day
+          <Label>Production:</Label>{" "}
+          {numberWithCommas(colony.honeyProduction.toFixed(0))}g per day
         </div>
         <div>
           <Label>Reserves:</Label> {colony.howLongWillHoneyLast.toFixed(0)} days
@@ -127,7 +129,10 @@ export function ColonyStats() {
           You need {config.successThreshold} days of honey to last the winter.
           That's{" "}
           <HoneyAmount>
-            {(config.successThreshold * colony.honeyConsumption).toFixed(0)}g
+            {numberWithCommas(
+              config.successThreshold * colony.honeyConsumption
+            )}
+            g
           </HoneyAmount>{" "}
           of honey as your current colony size.
         </Info>
@@ -147,3 +152,7 @@ export function ColonyStats() {
     </Container>
   );
 }
+
+const numberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
