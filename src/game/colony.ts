@@ -78,7 +78,7 @@ export default class Colony {
         event.endMonth,
         event.endDay
       );
-      return date >= startDate && date <= endDate;
+      return event.type === "rain" && date >= startDate && date <= endDate;
     });
   }
 
