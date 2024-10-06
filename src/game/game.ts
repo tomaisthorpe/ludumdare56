@@ -29,7 +29,7 @@ export default class GameState
   public noticeTime = 0;
 
   private paused = true;
-  private noInstructions = true;
+  private noInstructions = false;
 
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
@@ -92,7 +92,7 @@ export default class GameState
       );
 
       if (currentEvent) {
-        this.setNotice("A beekeeper just took half your honey!");
+        this.setNotice("A beekeeper just took your honey!");
         this.colony.beekeeperHarvest();
       }
     }
@@ -111,7 +111,10 @@ export default class GameState
     }
 
     if (this.currentDate.getMonth() === config.endMonth) {
-      if (this.colony.honeyReserves >= config.successThreshold) {
+      if (
+        this.colony.honeyReserves >=
+        config.successThreshold * this.colony.calculateHoneyConsumption()
+      ) {
         this.engine.gameState.switch("gameOver", {
           success: true,
           reason: "You gathered enough honey to survive the winter!",

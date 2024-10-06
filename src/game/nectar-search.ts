@@ -95,7 +95,6 @@ export default class NectarSearch
   }
 
   public harvestDeposit(deposit: Deposit) {
-    console.log("harvesting deposit", deposit.info);
     // Figure out type of deposit, and if it's a new one.
     if (deposit.info.status != "available" || deposit.info.harvesting) {
       return;

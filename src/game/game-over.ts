@@ -11,6 +11,7 @@ export default class GameOver
 {
   public success?: boolean;
   public reason?: string;
+  public honeyReserves?: number;
 
   public async onCreate() {
     this.engine.updateGameContext({ state: "gameOver" });
@@ -18,12 +19,21 @@ export default class GameOver
 
   public async onEnter(
     _: TEngine,
-    { success, reason }: { success: boolean; reason: string }
+    {
+      success,
+      reason,
+      honeyReserves,
+    }: { success: boolean; reason: string; honeyReserves: number }
   ) {
-    console.log("GameOver.onEnter", success, reason);
     this.success = success;
     this.reason = reason;
-    this.engine.updateGameContext({ state: "gameOver", success, reason });
+    this.honeyReserves = honeyReserves;
+    this.engine.updateGameContext({
+      state: "gameOver",
+      success,
+      reason,
+      honeyReserves,
+    });
   }
 
   public onUpdate() {
@@ -31,6 +41,7 @@ export default class GameOver
       state: "gameOver",
       success: this.success,
       reason: this.reason,
+      honeyReserves: this.honeyReserves,
     });
   }
 }

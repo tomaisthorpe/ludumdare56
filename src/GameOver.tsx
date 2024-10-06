@@ -41,7 +41,7 @@ const Bee = styled.img`
 `;
 
 export default function GameOver() {
-  const { state, success, reason } = useGameContext();
+  const { state, success, reason, honeyReserves } = useGameContext();
   if (!state || state != "gameOver" || success === undefined || !reason) {
     return null;
   }
@@ -51,6 +51,14 @@ export default function GameOver() {
       <Title>{success ? "You Win!" : "Game Over"}</Title>
       <Subtitle>
         {reason}
+        {success && (
+          <>
+            <br />
+            <br />
+            You gathered {numberWithCommas(honeyReserves.toFixed(0))}g of honey.
+          </>
+        )}
+        <br />
         <br />
         Refresh to try again.
       </Subtitle>
@@ -58,3 +66,7 @@ export default function GameOver() {
     </Container>
   );
 }
+
+const numberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
