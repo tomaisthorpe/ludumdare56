@@ -13,6 +13,9 @@ import Garden from "./garden";
 import Deposit from "./deposit";
 import { NectarDeposit } from "./colony";
 import HarvestingBee from "./harvesting-bee";
+import FollowerBee from "./follower-bee";
+
+const followerBees = 10;
 
 export default class NectarSearch
   extends TGameState
@@ -23,6 +26,7 @@ export default class NectarSearch
   public time: number = -0.25;
 
   private scoutBee!: ScoutBee;
+  public followerBees: FollowerBee[] = [];
   private overDeposit: Deposit | null = null;
 
   public beforeWorldCreate() {
@@ -92,6 +96,13 @@ export default class NectarSearch
 
     this.garden = new Garden(engine, this);
     this.addActor(this.garden);
+
+    for (let i = 0; i < followerBees; i++) {
+      const bee = new FollowerBee(engine, this.scoutBee, this);
+      this.addActor(bee);
+
+      this.followerBees.push(bee);
+    }
   }
 
   public harvestDeposit(deposit: Deposit) {
