@@ -16,10 +16,9 @@ const DialContainer = styled.div`
   border-radius: 10px;
 `;
 
-const Dial = styled.div<{ time: number }>`
+const Dial = styled.div`
   width: 256px;
   height: 256px;
-  transform: rotate(${(props) => props.time * 360}deg);
   transform-origin: center center;
 `;
 
@@ -34,7 +33,7 @@ export default function SearchClock() {
   return (
     <Container>
       <DialContainer>
-        <Dial time={time}>
+        <Dial style={{ transform: `rotate(${time * 360}deg)` }}>
           <DialImage src="/clock.png" width="256" height="256" />
         </Dial>
       </DialContainer>
