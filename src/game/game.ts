@@ -28,6 +28,9 @@ export default class GameState
   public notice?: string;
   public noticeTime = 0;
 
+  private paused = true;
+  private noInstructions = true;
+
   public async onCreate(engine: TEngine) {
     const rp = new TResourcePack(engine, Apiary.resources, Bee.resources);
     await rp.load();
@@ -64,6 +67,13 @@ export default class GameState
   }
 
   public onUpdate(_: TEngine, delta: number) {
+    if (this.paused) {
+      this.engine.updateGameContext({
+        state: "instructions",
+      });
+      return;
+    }
+
     if (
       this.timeSinceStartDay > config.timePerDay ||
       this.timeSinceStartDay < 0
@@ -130,6 +140,17 @@ export default class GameState
     }>("GO_SEARCH_FOR_NECTAR", () => {
       this.engine.gameState.push("nectarSearch", this.colony.nectarDeposits);
     });
+
+    this.events.addListener<{
+      type: "START_GAME";
+    }>("START_GAME", () => {
+      this.paused = false;
+    });
+
+    // Quick hack to start the game faster when testing
+    if (this.noInstructions) {
+      this.paused = false;
+    }
   }
 
   public spawnBee(isLeaving: boolean) {

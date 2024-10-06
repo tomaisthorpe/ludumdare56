@@ -8,7 +8,7 @@ import GameOver from "./GameOver";
 import DepositTimeline from "./DepositTimeline";
 import SearchClock from "./SearchClock";
 import Notice from "./Notice";
-
+import Instructions from "./Instructions";
 function App() {
   return (
     <>
@@ -32,6 +32,7 @@ function App() {
           <NectarDeposits />
           <DepositTimeline />
           <SearchClock />
+          <Instructions />
         </TGame>
       </div>
     </>

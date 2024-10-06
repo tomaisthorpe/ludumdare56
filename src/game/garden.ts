@@ -145,7 +145,6 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
       for (let y = -gardenSize / 200; y < gardenSize / 200; y++) {
         const value = noise.simplex2(x, y);
 
-        console.log(x, y, value);
         if (value > 0.9) {
           const t = new TSpriteComponent(
             this.engine,

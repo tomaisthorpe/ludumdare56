@@ -25,7 +25,7 @@ const config = {
     initialHoneyReserves: 100,
     initialLayingRate: 2,
     eggMultiplier: 8,
-    honeyConsumptionPerBee: 0.04,
+    honeyConsumptionPerBee: 0.05,
     starvationTolerance: 3,
     nectarHarvestPerBee: 0.2,
   },
