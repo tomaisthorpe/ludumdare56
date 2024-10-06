@@ -13,6 +13,8 @@ import {
 import ScoutBee from "./scout-bee";
 import NectarSearch from "./nectar-search";
 
+const maxOffset = 100;
+
 export default class FollowerBee extends TActor implements TActorWithOnUpdate {
   public static resources: TResourcePackConfig = {
     textures: [
@@ -48,6 +50,12 @@ export default class FollowerBee extends TActor implements TActorWithOnUpdate {
       TSpriteLayer.Foreground_1
     );
     this.sprite.applyTexture(engine, scoutTexture);
+
+    this.rootComponent.transform.translation = vec3.fromValues(
+      Math.random() * maxOffset - maxOffset / 2,
+      Math.random() * maxOffset - maxOffset / 2,
+      0
+    );
 
     // Initialize previousPosition
     vec3.copy(this.previousPosition, this.rootComponent.transform.translation);
@@ -216,7 +224,7 @@ export default class FollowerBee extends TActor implements TActorWithOnUpdate {
         this.rootComponent.transform.rotation,
         0,
         0,
-        ((angle + Math.PI / 2) * 180) / Math.PI
+        ((angle + Math.PI / 2) * 180) / Math.PI + -180
       );
     }
   }
