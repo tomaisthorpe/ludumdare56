@@ -12,6 +12,7 @@ const Container = styled.div`
   align-items: center;
   font-size: 2rem;
   color: white;
+  z-index: 100;
 `;
 
 const Panel = styled.div`
