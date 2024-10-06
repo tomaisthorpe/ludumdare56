@@ -1,7 +1,7 @@
 import { NectarDeposit } from "./colony";
 
 export type Event = {
-  type: "rain";
+  type: "rain" | "harvest";
   name: string;
   startDay: number;
   startMonth: number;
@@ -27,10 +27,10 @@ const config = {
     initialWorkerBees: 1400,
     initialHoneyReserves: 1500,
     initialLayingRate: 2,
-    eggMultiplier: 20,
+    eggMultiplier: 28,
     honeyConsumptionPerBee: 0.05,
     starvationTolerance: 3,
-    nectarHarvestPerBee: 0.4,
+    nectarHarvestPerBee: 0.2,
   },
   apiary: {
     spawnRatePerBee: 0.00005,
@@ -47,10 +47,10 @@ const config = {
     {
       type: "rain",
       name: "Rain",
-      startDay: 20,
+      startDay: 15,
       startMonth: 4,
-      endDay: 5,
-      endMonth: 5,
+      endDay: 25,
+      endMonth: 4,
     },
     {
       type: "rain",
@@ -67,6 +67,22 @@ const config = {
       startMonth: 7,
       endDay: 18,
       endMonth: 7,
+    },
+    {
+      type: "rain",
+      name: "Rain",
+      startDay: 20,
+      startMonth: 6,
+      endDay: 25,
+      endMonth: 6,
+    },
+    {
+      type: "harvest",
+      name: "Honey Harvest",
+      startDay: 4,
+      startMonth: 5,
+      endDay: 6,
+      endMonth: 5,
     },
   ] as Event[],
   garden: {

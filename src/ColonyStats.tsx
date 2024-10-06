@@ -130,7 +130,9 @@ export function ColonyStats() {
           That's{" "}
           <HoneyAmount>
             {numberWithCommas(
-              config.successThreshold * colony.honeyConsumption
+              parseInt(
+                (config.successThreshold * colony.honeyConsumption).toFixed(0)
+              )
             )}
             g
           </HoneyAmount>{" "}

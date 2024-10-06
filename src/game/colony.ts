@@ -45,8 +45,17 @@ export default class Colony {
   public nectarDeposits: NectarDeposit[] = config.garden.deposits;
 
   constructor() {
-    // Initialize with initial worker bees, all at age 0
-    this.workerBees.push({ count: config.colony.initialWorkerBees, age: 0 });
+    // Initialize with initial worker bees, with a random spread of ages over 4 weeks
+    const ages = Array.from({ length: 28 }, (_, i) => i);
+    ages.sort(() => Math.random() - 0.5);
+    this.workerBees = ages.map((age) => ({
+      count: Math.floor(config.colony.initialWorkerBees / 28),
+      age,
+    }));
+  }
+
+  public beekeeperHarvest() {
+    this._honeyReserves *= 0.5;
   }
 
   public get numBees(): number {
@@ -109,15 +118,15 @@ export default class Colony {
 
     // Age brood and hatch into worker bees
     this.brood = this.brood.map((group) => ({ ...group, age: group.age + 1 }));
-    if (this.brood.length > 0 && this.brood[this.brood.length - 1].age >= 7) {
+    if (this.brood.length > 0 && this.brood[this.brood.length - 1].age >= 3) {
       const hatchedBees = this.brood.pop()!;
       this.workerBees.unshift({ count: hatchedBees.count, age: 0 });
     }
 
-    // Age worker bees and remove those older than 6 weeks
+    // Age worker bees and remove those older than 4 weeks
     this.workerBees = this.workerBees
       .map((group) => ({ ...group, age: group.age + 1 }))
-      .filter((group) => group.age <= 42); // 6 weeks * 7 days
+      .filter((group) => group.age <= 28); // 4 weeks * 7 days
 
     // Ensure nectar deposits are available/unavailable depending on the dates
     this.nectarDeposits.forEach((deposit) => {

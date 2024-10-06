@@ -81,6 +81,20 @@ export default class GameState
       this.timeSinceStartDay = 0;
       this.currentDate.setDate(this.currentDate.getDate() + 1);
       this.colony.step(this.currentDate);
+
+      // Check if it's time to harvest honey
+      const currentEvent = config.events.find(
+        (event) =>
+          event.type === "harvest" &&
+          this.currentDate.getMonth() === event.startMonth &&
+          this.currentDate.getDate() >= event.startDay &&
+          this.currentDate.getDate() <= event.endDay
+      );
+
+      if (currentEvent) {
+        this.setNotice("A beekeeper just took half your honey!");
+        this.colony.beekeeperHarvest();
+      }
     }
     this.timeSinceStartDay += delta;
 
