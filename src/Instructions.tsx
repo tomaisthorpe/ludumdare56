@@ -71,8 +71,8 @@ export default function Instructions() {
         </p>
         <p>
           Make sure you have enough bees to harvest the nectar by adjusting the
-          laying rate. Bees only live for 6 weeks, so you can reduce your hive
-          by lowing your laying rate and waiting.
+          laying rate. Your bees only live for 4 weeks, so you can reduce your
+          hive by lowing your laying rate and waiting.
         </p>
         <p>
           You win when you have enough honey reserves to last the winter. <br />
