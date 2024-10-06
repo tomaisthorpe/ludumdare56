@@ -15,12 +15,13 @@ const Container = styled.div`
 const Group = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 300px;
-  font-size: 22px;
+  width: 330px;
+  font-size: 20px;
   border: 2px solid ${config.palette.persianOrange};
   background-color: ${config.palette.earthYellow}cc;
   border-radius: 10px;
   padding: 5px 10px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
 const GroupLabel = styled.div`
@@ -37,6 +38,54 @@ const Stat = styled.div`
   gap: 10px;
 `;
 
+const HoneyBarContainer = styled.div`
+  width: 100%;
+  height: 20px;
+  background-color: transparent;
+  border: 2px solid ${config.palette.blue};
+  position: relative;
+  border-radius: 5px;
+  overflow: hidden;
+`;
+
+const HoneyBarFill = styled.div`
+  height: 100%;
+  background-color: ${config.palette.blue};
+`;
+
+const HoneyText = styled.div`
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+`;
+
+const Label = styled.span`
+  font-weight: bold;
+  color: ${config.palette.onyx}cc;
+  text-shadow: none;
+`;
+
+const Note = styled.div`
+  font-size: 12px;
+  color: ${config.palette.onyx}cc;
+`;
+
+const Info = styled.div`
+  font-size: 16px;
+  text-shadow: none;
+`;
+
+const HoneyAmount = styled.span`
+  color: ${config.palette.darkOrange};
+  font-weight: bold;
+  text-shadow: none;
+`;
+
 export function ColonyStats() {
   const { colony, state } = useGameContext();
 
@@ -44,23 +93,54 @@ export function ColonyStats() {
   if (!colony) return null;
   return (
     <Container>
-      <GroupLabel>Colony</GroupLabel>
-      <Group>
-        <Stat>Bees: {colony.numBees}</Stat>
-        <Stat>Brood: {colony.numBrood}</Stat>
-        <Stat>
-          Laying: <LayingRate rate={colony.layingRate} />
-        </Stat>
-      </Group>
-
       <GroupLabel>Honey</GroupLabel>
       <Group>
-        <div>Honey: {colony.honeyReserves.toFixed(0)}</div>
-        <div>Honey Consumption: {colony.honeyConsumption.toFixed(1)}</div>
-        <div>Honey Production: {colony.honeyProduction.toFixed(1)}</div>
+        <HoneyBarContainer>
+          <HoneyBarFill
+            style={{
+              width: `${Math.min(
+                (colony.honeyReserves /
+                  colony.honeyConsumption /
+                  config.successThreshold) *
+                  100,
+                100
+              )}%`,
+            }}
+          />
+          <HoneyText>{colony.honeyReserves.toFixed(0)}g</HoneyText>
+        </HoneyBarContainer>
         <div>
-          How Long Will Honey Last: {colony.howLongWillHoneyLast.toFixed(0)}
+          <Label>Consumption:</Label> {colony.honeyConsumption.toFixed(0)}g per
+          day
         </div>
+        <div>
+          <Label>Production:</Label> {colony.honeyProduction.toFixed(0)}g per
+          day
+        </div>
+        <div>
+          <Label>Reserves:</Label> {colony.howLongWillHoneyLast.toFixed(0)} days
+          <Note>(based on current consumption and production)</Note>
+        </div>
+        <Info>
+          You need {config.successThreshold} days of honey to last the winter.
+          That's{" "}
+          <HoneyAmount>
+            {(config.successThreshold * colony.honeyConsumption).toFixed(0)}g
+          </HoneyAmount>{" "}
+          of honey as your current colony size.
+        </Info>
+      </Group>
+      <GroupLabel>Colony</GroupLabel>
+      <Group>
+        <Stat>
+          <Label>Bees:</Label> {colony.numBees}
+        </Stat>
+        <Stat>
+          <Label>Brood:</Label> {colony.numBrood}
+        </Stat>
+        <Stat>
+          <Label>Laying:</Label> <LayingRate rate={colony.layingRate} />
+        </Stat>
       </Group>
     </Container>
   );

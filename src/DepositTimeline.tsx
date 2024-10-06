@@ -22,6 +22,7 @@ const Timeline = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
 const MonthsContainer = styled.div<{ left: number }>`

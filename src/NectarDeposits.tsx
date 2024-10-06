@@ -16,6 +16,7 @@ const Deposits = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
 const Deposit = styled.div`
@@ -29,6 +30,7 @@ const DepositLabel = styled.div`
   font-weight: bold;
   font-size: 18px;
   color: ${config.palette.blue};
+  text-shadow: none;
 `;
 
 const DepositTimeLeft = styled.div`

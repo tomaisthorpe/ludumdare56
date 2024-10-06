@@ -18,21 +18,22 @@ const config = {
     vanilla: "#dfd5a5",
     earthYellow: "#dbad6a",
     persianOrange: "#cb9152",
+    darkOrange: "#92602c",
   },
   startingDay: 1,
   startingMonth: 3,
-  timePerDay: 1,
+  timePerDay: 100,
   colony: {
-    initialWorkerBees: 140,
-    initialHoneyReserves: 100,
-    initialLayingRate: 2,
-    eggMultiplier: 8,
-    honeyConsumptionPerBee: 0.05,
+    initialWorkerBees: 1400,
+    initialHoneyReserves: 1500,
+    initialLayingRate: 20,
+    eggMultiplier: 40,
+    honeyConsumptionPerBee: 0.15,
     starvationTolerance: 3,
-    nectarHarvestPerBee: 0.2,
+    nectarHarvestPerBee: 0.5,
   },
   apiary: {
-    spawnRatePerBee: 0.001,
+    spawnRatePerBee: 0.00005,
   },
   events: [
     {
@@ -76,7 +77,7 @@ const config = {
       {
         id: 0,
         name: "Hawthorn",
-        potential: 100,
+        potential: 1000,
         startDay: 1,
         startMonth: 3,
         endDay: 30,
@@ -88,7 +89,7 @@ const config = {
       {
         id: 1,
         name: "Fruit Trees",
-        potential: 80,
+        potential: 800,
         startDay: 10,
         startMonth: 3,
         endDay: 30,
@@ -100,7 +101,7 @@ const config = {
       {
         id: 2,
         name: "Clover",
-        potential: 160,
+        potential: 1600,
         startDay: 10,
         startMonth: 6,
         endDay: 15,
@@ -112,7 +113,7 @@ const config = {
       {
         id: 3,
         name: "Blackberry",
-        potential: 200,
+        potential: 2000,
         startDay: 25,
         startMonth: 5,
         endDay: 15,
@@ -124,7 +125,7 @@ const config = {
       {
         id: 4,
         name: "Heather",
-        potential: 250,
+        potential: 2500,
         startDay: 25,
         startMonth: 5,
         endDay: 12,
