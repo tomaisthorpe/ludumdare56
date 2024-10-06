@@ -56,7 +56,7 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
   private background: TSpriteComponent;
   private cloud: TSpriteComponent;
   private cloudPosition: number = -600; // Starting position off-screen to the left
-  private cloudSpeed: number = 10; // Pixels per second
+  private cloudSpeed: number = 20; // Pixels per second
 
   constructor(
     engine: TEngine,
@@ -98,7 +98,7 @@ export default class Apiary extends TActor implements TActorWithOnUpdate {
     this.cloud.applyTexture(engine, cloudTexture);
     this.cloud.transform.translation = vec3.fromValues(
       this.cloudPosition,
-      Math.random() * 150 + 150,
+      Math.random() * 200 + 200,
       0
     );
 
