@@ -207,20 +207,10 @@ export default class Garden extends TActor implements TActorWithOnUpdate {
       new Wall((128 * (howmanygrass - 1)) / 2, 0, 128, 128 * howmanygrass)
     );
     this.state.addActor(
-      new Wall(
-        (-128 * howmanygrass) / 2,
-        (-128 * howmanygrass) / 2,
-        128 * howmanygrass,
-        128
-      )
+      new Wall(0, (-128 * howmanygrass) / 2, 128 * howmanygrass, 128)
     );
     this.state.addActor(
-      new Wall(
-        (-128 * howmanygrass) / 2,
-        (128 * (howmanygrass - 1)) / 2,
-        128 * howmanygrass,
-        128
-      )
+      new Wall(0, (128 * (howmanygrass - 1)) / 2, 128 * howmanygrass, 128)
     );
   }
 }
@@ -234,11 +224,7 @@ class Wall extends TActor {
       fixedRotation: true,
       friction: 0,
     });
-    box.transform.translation = vec3.fromValues(
-      x + width / 2,
-      y + height / 2,
-      -20
-    );
+    box.transform.translation = vec3.fromValues(x, y, -20);
     this.rootComponent = box;
 
     box.collider = new TBoxCollider(width, height, 40, "Solid");
